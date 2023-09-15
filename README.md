@@ -1,2 +1,2 @@
-# License-plate-recognition
-In this repository we will build an Automatic License Plate detection and recognition program using OpenCV and Python
+# Signal, image and video processing
+In this repository we will build diferents projects related to signal, images and video processing.
