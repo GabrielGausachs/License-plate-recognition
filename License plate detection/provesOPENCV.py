@@ -4,7 +4,8 @@ import numpy as np
 
 placa = []
 
-image = cv2.imread('C:/Users/arnau/OneDrive/Escritorio/ARNAU G/UNI/4t ENG DADES/PSIV II/foto2.jpg')
+#image = cv2.imread('C:/Users/arnau/OneDrive/Escritorio/ARNAU G/UNI/4t ENG DADES/PSIV II/foto2.jpg')
+image = cv2.imread('License plate detection/img1.img1.jpg')
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 gray = cv2.blur(gray,(3,3))
 canny = cv2.Canny(gray,30,200)
