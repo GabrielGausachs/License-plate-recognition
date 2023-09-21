@@ -50,5 +50,6 @@ for contour in candidate_contours:
 cv2.imshow("Matrículas Detectadas", img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+print('')
 
 
