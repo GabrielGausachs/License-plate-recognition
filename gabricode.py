@@ -7,12 +7,13 @@ import numpy as np
 import imutils
 import os
 
-carpeta_imagenes = "C:/Users/Gabriel/OneDrive/Escritorio/4t any uni/psiv/car images"
+carpeta_imagenes = "C:/Users/arnau/OneDrive/Escritorio/ARNAU G/UNI/4t ENG DADES/PSIV II/Lateral"
 
 for nombre_archivo in os.listdir(carpeta_imagenes):
     ruta_completa = os.path.join(carpeta_imagenes, nombre_archivo)
     image = cv2.imread(ruta_completa)
     image = imutils.resize(image, width=500)
+    image_copy = image.copy()
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     cv2.imshow("Original Image", image)
     cv2.waitKey(0)
@@ -21,12 +22,39 @@ for nombre_archivo in os.listdir(carpeta_imagenes):
     blackhat = cv2.morphologyEx(gray, cv2.MORPH_BLACKHAT, rectKern)
     cv2.imshow("blackhat Image", blackhat)
     cv2.waitKey(0)
+    
+    kernel = np.ones((5, 5), np.uint8)
+    image = cv2.erode(image, kernel)        
 
     kernel = np.ones((9, 20), np.uint8) 
     dilate_image = cv2.dilate(blackhat, kernel, iterations=1)
-    cv2.imshow('box', dilate_image)
+    cv2.imshow('dilate1', dilate_image)
     cv2.waitKey(0)
     
+    kernel = np.ones((5, 5), np.uint8)
+    erode_img = cv2.erode(image, kernel) 
+    cv2.imshow('erode1', erode_img)
+    cv2.waitKey(0)
+    
+    kernel = np.ones((9, 20), np.uint8) 
+    dilate_image_2 = cv2.dilate(blackhat, kernel, iterations=1)
+    cv2.imshow('dilate2', dilate_image_2)
+    cv2.waitKey(0)
+    
+    kernel = np.ones((5, 5), np.uint8)
+    erode_img2 = cv2.erode(image, kernel) 
+    cv2.imshow('erode1', erode_img2)
+    cv2.waitKey(0)
+    
+    kernel = np.ones((9, 20), np.uint8) 
+    dilate_image_3 = cv2.dilate(blackhat, kernel, iterations=1)
+    cv2.imshow('dilate2', dilate_image_3)
+    cv2.waitKey(0)
+    
+    kernel = np.ones((5, 5), np.uint8)
+    erode_img3 = cv2.erode(image, kernel) 
+    cv2.imshow('erode1', erode_img3)
+    cv2.waitKey(0)
 
     _, binary_image = cv2.threshold(dilate_image, 127, 255, cv2.THRESH_BINARY)
     cv2.imshow("binary Image", binary_image)
@@ -51,5 +79,5 @@ for nombre_archivo in os.listdir(carpeta_imagenes):
             screenCnt = approx
             break
 
-    cv2.imshow('box', cv2.rectangle(image, tuple(box[0].astype(int)), tuple(box[2].astype(int)),(0,0,255),2))
+    cv2.imshow('box', cv2.rectangle(image_copy, tuple(box[0].astype(int)), tuple(box[2].astype(int)),(0,0,255),2))
     cv2.waitKey(0)
