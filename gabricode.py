@@ -71,8 +71,8 @@ for nombre_archivo in os.listdir(carpeta_imagenes):
         approx = cv2.approxPolyDP(contour, epsilon, True)
 
         # Si el contorno aproximado tiene 4 vértices, puede ser una matrícula
-        if len(approx) == 4 and cv2.contourArea>area:
-            area = cv2.contourArea
+        if  int(cv2.contourArea(contour))>area:  #len(approx) == 4 and
+            area = int(cv2.contourArea(contour))
             # Dibujar un rectángulo alrededor de la matrícula
             rect = cv2.minAreaRect(contour)
             box = cv2.boxPoints(rect)
