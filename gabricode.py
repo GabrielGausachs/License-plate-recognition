@@ -22,8 +22,13 @@ for nombre_archivo in os.listdir(carpeta_imagenes):
     blackhat = cv2.morphologyEx(gray, cv2.MORPH_BLACKHAT, rectKern)
     #cv2.imshow("blackhat Image", blackhat)
     #cv2.waitKey(0)
+    
+    kernel = np.ones((4,4), np.uint8)
+    erode_img3 = cv2.erode(image, kernel) 
+    #cv2.imshow('erode1', erode_img3)
+    #cv2.waitKey(0)
 
-    kernel = np.ones((10, 23), np.uint8) 
+    kernel = np.ones((18, 23), np.uint8) 
     dilate_image = cv2.dilate(blackhat, kernel, iterations=1)
     #cv2.imshow('dilate1', dilate_image)
     #cv2.waitKey(0)
@@ -33,7 +38,7 @@ for nombre_archivo in os.listdir(carpeta_imagenes):
     #cv2.imshow('erode1', erode_img)
     #cv2.waitKey(0)
     
-    kernel = np.ones((10, 23), np.uint8) 
+    kernel = np.ones((18, 23), np.uint8) 
     dilate_image_2 = cv2.dilate(blackhat, kernel, iterations=1)
     #cv2.imshow('dilate2', dilate_image_2)
     #cv2.waitKey(0)
@@ -43,14 +48,9 @@ for nombre_archivo in os.listdir(carpeta_imagenes):
     #cv2.imshow('erode1', erode_img2)
     #cv2.waitKey(0)
     
-    kernel = np.ones((10, 23), np.uint8) 
+    kernel = np.ones((18, 23), np.uint8) 
     dilate_image_3 = cv2.dilate(blackhat, kernel, iterations=1)
     #cv2.imshow('dilate2', dilate_image_3)
-    #cv2.waitKey(0)
-    
-    kernel = np.ones((4,4), np.uint8)
-    erode_img3 = cv2.erode(image, kernel) 
-    #cv2.imshow('erode1', erode_img3)
     #cv2.waitKey(0)
 
     _, binary_image = cv2.threshold(dilate_image, 127, 255, cv2.THRESH_BINARY)
