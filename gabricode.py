@@ -20,38 +20,39 @@ for nombre_archivo in os.listdir(carpeta_imagenes):
 
     rectKern = cv2.getStructuringElement(cv2.MORPH_RECT, (13, 5))
     blackhat = cv2.morphologyEx(gray, cv2.MORPH_BLACKHAT, rectKern)
-    #cv2.imshow("blackhat Image", blackhat)
-    #cv2.waitKey(0)
+    cv2.imshow("blackhat Image", blackhat)
+    cv2.waitKey(0)
     
-    kernel = np.ones((4,4), np.uint8)
+    kernel = np.ones((1,4), np.uint8)
     erode_img3 = cv2.erode(image, kernel) 
-    #cv2.imshow('erode1', erode_img3)
-    #cv2.waitKey(0)
+    cv2.imshow('erode1', erode_img3)
+    cv2.waitKey(0)
 
-    kernel = np.ones((18, 23), np.uint8) 
+    kernel = np.ones((10, 23), np.uint8) 
     dilate_image = cv2.dilate(blackhat, kernel, iterations=1)
-    #cv2.imshow('dilate1', dilate_image)
-    #cv2.waitKey(0)
-    
-    kernel = np.ones((4, 4), np.uint8)
+    cv2.imshow('dilate1', dilate_image)
+    cv2.waitKey(0)
+    """
+    kernel = np.ones((1, 4), np.uint8)
     erode_img = cv2.erode(image, kernel) 
-    #cv2.imshow('erode1', erode_img)
-    #cv2.waitKey(0)
-    
-    kernel = np.ones((18, 23), np.uint8) 
+    cv2.imshow('erode1', erode_img)
+    cv2.waitKey(0)
+    """
+    kernel = np.ones((10, 23), np.uint8) 
     dilate_image_2 = cv2.dilate(blackhat, kernel, iterations=1)
-    #cv2.imshow('dilate2', dilate_image_2)
-    #cv2.waitKey(0)
-    
-    kernel = np.ones((4,4), np.uint8)
+    cv2.imshow('dilate2', dilate_image_2)
+    cv2.waitKey(0)
+    """
+    kernel = np.ones((1,4), np.uint8)
     erode_img2 = cv2.erode(image, kernel) 
-    #cv2.imshow('erode1', erode_img2)
-    #cv2.waitKey(0)
-    
-    kernel = np.ones((18, 23), np.uint8) 
+    cv2.imshow('erode1', erode_img2)
+    cv2.waitKey(0)
+    """
+    kernel = np.ones((10, 23), np.uint8) 
     dilate_image_3 = cv2.dilate(blackhat, kernel, iterations=1)
-    #cv2.imshow('dilate2', dilate_image_3)
+    cv2.imshow('dilate2', dilate_image_3)
     #cv2.waitKey(0)
+ 
 
     _, binary_image = cv2.threshold(dilate_image, 127, 255, cv2.THRESH_BINARY)
     cv2.imshow("binary Image", binary_image)
@@ -71,7 +72,7 @@ for nombre_archivo in os.listdir(carpeta_imagenes):
         approx = cv2.approxPolyDP(contour, epsilon, True)
 
         # Si el contorno aproximado tiene 4 vértices, puede ser una matrícula
-        if  int(cv2.contourArea(contour))>area:  #len(approx) == 4 and
+        if  int(cv2.contourArea(contour))>area and cv2.contourArea(contour)<8000:  #len(approx) == 4 and
             area = int(cv2.contourArea(contour))
             # Dibujar un rectángulo alrededor de la matrícula
             rect = cv2.minAreaRect(contour)
