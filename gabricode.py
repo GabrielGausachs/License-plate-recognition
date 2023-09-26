@@ -32,29 +32,29 @@ for nombre_archivo in os.listdir(carpeta_imagenes):
     dilate_image = cv2.dilate(blackhat, kernel, iterations=1)
     cv2.imshow('dilate1', dilate_image)
     cv2.waitKey(0)
-    """
+
     kernel = np.ones((1, 4), np.uint8)
     erode_img = cv2.erode(image, kernel) 
     cv2.imshow('erode1', erode_img)
     cv2.waitKey(0)
-    """
+
     kernel = np.ones((10, 23), np.uint8) 
     dilate_image_2 = cv2.dilate(blackhat, kernel, iterations=1)
     cv2.imshow('dilate2', dilate_image_2)
     cv2.waitKey(0)
-    """
+
     kernel = np.ones((1,4), np.uint8)
     erode_img2 = cv2.erode(image, kernel) 
     cv2.imshow('erode1', erode_img2)
     cv2.waitKey(0)
-    """
+
     kernel = np.ones((10, 23), np.uint8) 
     dilate_image_3 = cv2.dilate(blackhat, kernel, iterations=1)
     cv2.imshow('dilate2', dilate_image_3)
     #cv2.waitKey(0)
  
 
-    _, binary_image = cv2.threshold(dilate_image, 127, 255, cv2.THRESH_BINARY)
+    _, binary_image = cv2.threshold(dilate_image, 110, 255, cv2.THRESH_BINARY)
     cv2.imshow("binary Image", binary_image)
     cv2.waitKey(0)
 
