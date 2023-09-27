@@ -94,6 +94,7 @@ new_image = cv2.bitwise_and(image,image,mask=mask)
 Cropped = gray[topx:bottomx+1, topy:bottomy+1]
 
 cv2.imshow('box', Cropped)
+cv2.imwrite('matricula.jpg',Cropped)
 cv2.waitKey(0)
 
 
