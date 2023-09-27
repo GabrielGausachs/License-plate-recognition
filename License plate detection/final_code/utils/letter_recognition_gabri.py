@@ -16,6 +16,13 @@ text = pytesseract.image_to_string(image)
 print(text)
 
 
-#----------------ANOTHER APPROACH----------------
+#----------------WITH EASYOCR----------------
+
+import easyocr
+
+reader = easyocr.Reader(["es"])
+image = cv2.imread('C:/Users/Gabriel/OneDrive/Escritorio/4t any uni/psiv/PSIV-projects/License plate detection/final_code/img/1letter.jpg')
+result = reader.readtext(image)
+print(result)
 
 
