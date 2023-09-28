@@ -99,13 +99,15 @@ def load_images(path):
 train_transforms =transforms.Compose([
     transforms.Resize((75,50)),
     transforms.RandomHorizontalFlip(),
-    transforms.ToTensor()
+    transforms.ToTensor(),
+    transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
 
 valid_transforms =transforms.Compose([
     transforms.Resize((75,50)),
     transforms.RandomHorizontalFlip(),
-    transforms.ToTensor()
+    transforms.ToTensor(),
+    transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
 
 train_path = "C:/Users/Gabriel/OneDrive/Escritorio/4t any uni/psiv/splits/train"
@@ -117,14 +119,26 @@ valid_dataset = torchvision.datasets.ImageFolder(root = valid_path, transform = 
 
 print(train_dataset)
 
-train_loader = torch.utils.data.DataLoader(train_dataset,batch_size=64,shuffle=True)
-train_loader = torch.utils.data.DataLoader(valid_dataset,batch_size=64,shuffle=True)
+batch_size=64
 
-#plt.figure(figsize=(16, 6))
+dataloaders_dict={'train':torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4),
+                  'val': torch.utils.data.DataLoader(valid_dataset, batch_size=batch_size, shuffle=True, num_workers=4)}
+
+
+import numpy as np
+from PIL import Image
+
+# show some images
+plt.figure(figsize=(16, 6))
 for i in range(10):
-    #plt.subplot(2, 5, i + 1)
-    image,label=train_dataset[i+15000]
-    print(label)
-    #image = train_dataset.data[i,...]
-    #plt.imshow(image.squeeze().numpy(), cmap="gray")
-    #plt.axis('off');
+    plt.subplot(2, 5, i + 1)
+    idx = np.random.randint(0,len(train_dataset.samples))
+    image_path = train_dataset.samples[idx][0]
+    try:
+        image = Image.open(image_path)
+        plt.imshow(image)
+        plt.axis('off')
+    except Exception as e:
+        print(f"Error opening image at {image_path}: {e}")
+
+plt.show()
