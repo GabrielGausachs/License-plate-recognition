@@ -119,3 +119,12 @@ print(train_dataset)
 
 train_loader = torch.utils.data.DataLoader(train_dataset,batch_size=64,shuffle=True)
 train_loader = torch.utils.data.DataLoader(valid_dataset,batch_size=64,shuffle=True)
+
+#plt.figure(figsize=(16, 6))
+for i in range(10):
+    #plt.subplot(2, 5, i + 1)
+    image,label=train_dataset[i+15000]
+    print(label)
+    #image = train_dataset.data[i,...]
+    #plt.imshow(image.squeeze().numpy(), cmap="gray")
+    #plt.axis('off');
