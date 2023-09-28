@@ -117,7 +117,7 @@ valid_path = "C:/Users/Gabriel/OneDrive/Escritorio/4t any uni/psiv/splits/valida
 train_dataset = torchvision.datasets.ImageFolder(root = train_path, transform = train_transforms )
 valid_dataset = torchvision.datasets.ImageFolder(root = valid_path, transform = valid_transforms )
 
-print(train_dataset)
+print(train_dataset.samples[0])
 
 batch_size=64
 
@@ -128,17 +128,21 @@ dataloaders_dict={'train':torch.utils.data.DataLoader(train_dataset, batch_size=
 import numpy as np
 from PIL import Image
 
-# show some images
-plt.figure(figsize=(16, 6))
-for i in range(10):
-    plt.subplot(2, 5, i + 1)
-    idx = np.random.randint(0,len(train_dataset.samples))
-    image_path = train_dataset.samples[idx][0]
-    try:
-        image = Image.open(image_path)
-        plt.imshow(image)
-        plt.axis('off')
-    except Exception as e:
-        print(f"Error opening image at {image_path}: {e}")
+def show_images(dataset):
+    # show some images
+    plt.figure(figsize=(16, 6))
+    for i in range(10):
+        plt.subplot(2, 5, i + 1)
+        idx = np.random.randint(0,len(dataset.samples))
+        image_path = dataset.samples[idx][0]
+        label = os.path.basename(os.path.dirname(image_path))
+        try:
+            image = Image.open(image_path)
+            plt.imshow(image)
+            plt.title(label)
+            plt.axis('off')
+        except Exception as e:
+            print(f"Error opening image at {image_path}: {e}")
+    plt.show()
 
-plt.show()
+show_images(train_dataset)
