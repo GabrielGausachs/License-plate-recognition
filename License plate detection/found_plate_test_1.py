@@ -42,34 +42,20 @@ class Plates:
 
         # Threshold
         _, mask = cv2.threshold(self.img, thresh=200, maxval=255, type=cv2.THRESH_BINARY+cv2.THRESH_OTSU)
-        if self.option is not None and self.option['no_bitwise']:
-            self.img_mask = self.img
-        else:
-            self.img_mask = cv2.bitwise_and(self.img, mask)
+        self.img_mask = cv2.bitwise_and(self.img, mask)
 
         # inRange Threshold function
-        if self.color in ('white', 'yellow'):
-            hsv = cv2.cvtColor(self.ori, cv2.COLOR_BGR2HSV)
-            h, s, v1 = cv2.split(hsv)
-            if self.color == 'white':
-                lower_white = np.array([0,0,160], dtype=np.uint8)
-                upper_white = np.array([255,40,255], dtype=np.uint8)
-            elif self.color == 'yellow':
-                lower_white = np.array([20, 100, 100], dtype=np.uint8)
-                upper_white = np.array([30, 255, 255], dtype=np.uint8)
-            res_mask = cv2.inRange(hsv, lower_white, upper_white)
-            self.res_img = cv2.bitwise_and(v1, self.img, mask=res_mask)
-        else:
-            if self.color == 'special' and self.option is not None and self.option['type'] == 'color':
-                print(":::::Special - color")
-                hsv = cv2.cvtColor(self.ori, cv2.COLOR_BGR2HSV)
-                h, s, v1 = cv2.split(hsv)
-                upper_white = self.option['upper_white']
-                lower_white = self.option['lower_white']
-                res_mask = cv2.inRange(hsv, lower_white, upper_white)
-                self.res_img = cv2.bitwise_and(v1, self.img, mask=res_mask)
-            else:
-                self.res_img = self.img_mask
+        hsv = cv2.cvtColor(self.ori, cv2.COLOR_BGR2HSV)
+        h, s, v1 = cv2.split(hsv)
+        if self.color == 'white':
+            lower_white = np.array([0,0,160], dtype=np.uint8)
+            upper_white = np.array([255,40,255], dtype=np.uint8)
+        elif self.color == 'yellow':
+            lower_white = np.array([20, 100, 100], dtype=np.uint8)
+            upper_white = np.array([30, 255, 255], dtype=np.uint8)
+        res_mask = cv2.inRange(hsv, lower_white, upper_white)
+        self.res_img = cv2.bitwise_and(v1, self.img, mask=res_mask)
+
 
         # Edge Detection
         self.edges = cv2.Canny(self.res_img, height, width)
