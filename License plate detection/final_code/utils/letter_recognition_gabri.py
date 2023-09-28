@@ -155,43 +155,24 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-class ConvNet(nn.Module):
-    def __init__(self,num_classes):
-        super(ConvNet, self).__init__()
-        self.conv1 = nn.Conv2d(3, 32, kernel_size=3, padding=0)
-        self.bn1 = nn.BatchNorm2d(32)
-        self.conv2 = nn.Conv2d(32, 32, kernel_size=3, padding=0)
-        self.bn2 = nn.BatchNorm2d(32)
-        self.conv3 = nn.Conv2d(32, 32, kernel_size=5, stride=2, padding=2)
-        self.bn3 = nn.BatchNorm2d(32)
-        self.dropout1 = nn.Dropout(0.4)
-        self.conv4 = nn.Conv2d(32, 64, kernel_size=3, padding=0)
-        self.bn4 = nn.BatchNorm2d(64)
-        self.conv5 = nn.Conv2d(64, 64, kernel_size=3, padding=0)
-        self.bn5 = nn.BatchNorm2d(64)
-        self.conv6 = nn.Conv2d(64, 64, kernel_size=5, stride=2, padding=2)
-        self.bn6 = nn.BatchNorm2d(64)
-        self.dropout2 = nn.Dropout(0.4)
-        self.conv7 = nn.Conv2d(64, 128, kernel_size=4, padding=0)
-        self.bn7 = nn.BatchNorm2d(128)
-        self.fc = nn.Linear(11648, num_classes)
-        self.relu = nn.ReLU()
-        self.softmax = nn.Softmax(dim=1)
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    def forward(self, x):
-        x = self.relu(self.bn1(self.conv1(x)))
-        x = self.relu(self.bn2(self.conv2(x)))
-        x = self.relu(self.bn3(self.conv3(x)))
-        x = self.dropout1(x)
-        x = self.relu(self.bn4(self.conv4(x)))
-        x = self.relu(self.bn5(self.conv5(x)))
-        x = self.relu(self.bn6(self.conv6(x)))
-        x = self.dropout2(x)
-        x = self.relu(self.bn7(self.conv7(x)))
-        x = x.view(x.size(0), -1)  # Flatten
-        x = self.fc(x)
-        x = self.softmax(x)
-        return x
+import torch.nn as nn
+from torchvision import datasets, models, transforms
+
+def set_parameter_requires_grad(model, feature_extracting):
+    if feature_extracting:
+        for param in model.parameters():
+            param.requires_grad = False
+
+def initialize_model_fe(num_classes):
+    # Resnet18 with pretrained weights 
+    model = models.resnet18(pretrained=True) # Notice we are now loading the weights of a ResNet model trained on ImageNet
+    set_parameter_requires_grad(model,True)
+    model.fc = nn.Linear(in_features=512,out_features=num_classes)  
+    input_size = 224
+    return model, input_size
+
 
 def train_model(model, dataloaders, criterion, optimizer, num_epochs=25):
     since = time.time()
@@ -219,6 +200,9 @@ def train_model(model, dataloaders, criterion, optimizer, num_epochs=25):
 
             # Iterate over data.
             for inputs, labels in dataloaders[phase]:
+
+                inputs = inputs.to(device)
+                labels = labels.to(device)
 
                 # zero the parameter gradients
                 optimizer.zero_grad()
@@ -265,8 +249,15 @@ def train_model(model, dataloaders, criterion, optimizer, num_epochs=25):
     return model, acc_history, losses
 
 num_classes = len(train_dataset.classes)
-model = ConvNet(num_classes)
+model, input_size = initialize_model_fe(num_classes)
 
+params_to_update = []
+for name,param in model.named_parameters():
+    if param.requires_grad == True:
+        params_to_update.append(param)
+
+# Send the model to GPU
+model = model.to(device)
 # Setup the loss fxn
 criterion = nn.CrossEntropyLoss()
 
