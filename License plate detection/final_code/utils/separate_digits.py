@@ -60,4 +60,7 @@ def character_segmentation(input):
     cv2.imshow('rect',imageOut)
     cv2.waitKey(0)
 
-character_segmentation('C:/Users/Gabriel/OneDrive/Escritorio/4t any uni/psiv/PSIV-projects/License plate detection/final_code/img/matricula.jpg')
+#character_segmentation('C:/Users/Gabriel/OneDrive/Escritorio/4t any uni/psiv/PSIV-projects/License plate detection/final_code/img/matricula.jpg')
+
+#image=cv2.imread('C:/Users/Gabriel/OneDrive/Escritorio/4t any uni/psiv/PSIV-projects/License plate detection/final_code/img/2letter.jpg')
+
