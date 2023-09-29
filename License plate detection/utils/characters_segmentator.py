@@ -32,8 +32,9 @@ def segmentate_characters(input):
         for file in os.listdir("temp_digits"):
             os.remove(os.path.join("temp_digits", file))
 
-    # image = cv2.imread(input)
-    image = cv2.cvtColor(input, cv2.COLOR_BGR2GRAY)
+    image=cv2.imread(input)
+    show_image(image,'Original')
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     image = imutils.resize(image, width=250)
     show_image(image, "Original")
 
@@ -43,56 +44,57 @@ def segmentate_characters(input):
     inverted = cv2.bitwise_not(th3)
     show_image(inverted, "Inverted")
 
+    contours,hierarchy = cv2.findContours(inverted, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
     imageOut = image.copy()
-
-    contours, hierarchy = cv2.findContours(
-        inverted, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
-    )
-
-    characters = []
-
-    n = 0
+    posible_contours=[]
+    characters=[]
     for indx, cnt in enumerate(contours):
-        x, y, w, h = cv2.boundingRect(cnt)
+        if hierarchy[0][indx][3] == -1:
+            x, y, w, h = cv2.boundingRect(cnt)
 
-        if (
-            x != 0
-            and y != 0
-            and x + w != imageOut.shape[1]
-            and y + h != imageOut.shape[0]
-        ):
-            if cv2.contourArea(cnt) > 140:
-                rect = cv2.minAreaRect(cnt)
-                box = cv2.boxPoints(rect)
-                box = np.intp(box)
-                cv2.drawContours(imageOut, [box], 0, (255, 0, 255), 2)
+            if (
+                x != 0
+                and y != 0
+                and x + w != imageOut.shape[1]
+                and y + h != imageOut.shape[0]
+                and cv2.contourArea(cnt) > 50):
+                    posible_contours.append(cnt)
 
-                # Masking the part other than the number plate
-                mask = np.zeros(imageOut.shape, np.uint8)
-                imageOut = cv2.drawContours(
-                    mask,
-                    [box],
-                    0,
-                    255,
-                    -1,
-                )
+    posible_contours = sorted(posible_contours, key=lambda cnt: cv2.boundingRect(cnt)[0])
+    n=0
+    margen=5
 
-                # Now crop
-                (x, y) = np.where(mask == 255)
-                (topx, topy) = (np.min(x), np.min(y))
-                (bottomx, bottomy) = (np.max(x), np.max(y))
-                letter = imageOut[topx : bottomx + 1, topy : bottomy + 1]
-                letter = imutils.resize(letter, width=25)
+    #if len(posible_contours>7) it means that the E is detected
+    if len(posible_contours)>7:
+        posible_contours=posible_contours[1:]
+    else:
+        pass
+    for cnt in posible_contours:
+        if n<7:
+            rect = cv2.minAreaRect(cnt)
+            box = cv2.boxPoints(rect)
+            box = np.intp(box)
+            cv2.drawContours(imageOut, [box], 0, (255, 0, 255), 2)
 
-                characters.append(letter)
+            (x, y, w, h) = cv2.boundingRect(cnt)
+            x -= margen
+            y -= margen
+            w += 2 * margen
+            h += 2 * margen
+            letter = image[y:y + h, x:x + w]
+            show_image(letter, "Character")
+            n+=1
 
-                show_image(letter, "Character")
-                cv2.imwrite(str(n) + "-character.jpg", letter)
-                n += 1
+    
+    show_image(imageOut,'final')
 
-    show_image(imageOut, "Final")
+    
     return characters
 
 
 if __name__ == "__main__":
-    segmentate_characters(cv2.imread("test.jpg"))
+    path_file = os.path.abspath(__file__)
+    direct = os.path.dirname(path_file)
+    path = os.path.join(direct+'\plate_test.png')
+    print(path)
+    segmentate_characters(path)
