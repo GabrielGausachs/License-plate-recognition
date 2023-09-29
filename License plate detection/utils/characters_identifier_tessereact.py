@@ -107,6 +107,10 @@ def test_with_plates(cutted=False):
         # Segmentate characters
         predicted_all = segmentate_characters(plate)
 
+        for i in range(len(predicted_all)):
+            # Show image
+            show_image(predicted_all[i], "Segmented character")
+
         # Predict characters in a segmented plate
         predicted_segmentated = identify_character(plate)
 
@@ -137,12 +141,12 @@ def test_with_plates(cutted=False):
 
 
 if __name__ == "__main__":
-    # test_with_plates()
+    test_with_plates()
 
     # Read image
     image = cv2.imread(os.path.join(os.path.dirname(__file__), "test_plate.png"))
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    
+
     # borrar todo lo que no esté en un fondo blanco
     image = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
 
@@ -151,17 +155,27 @@ if __name__ == "__main__":
 
     print(data)
     show_image(image, "Original")
-    
-    
+
     image = cv2.imread(os.path.join(os.path.dirname(__file__), "C.png"))
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    
+
     # borrar todo lo que no esté en un fondo blanco
     image = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-    
+
     # Find plate
     data = pytesseract.image_to_string(image, lang="eng", config="--psm 6")
-    
+
     print(data)
     show_image(image, "Original")
-    
+
+    image = cv2.imread(os.path.join(os.path.dirname(__file__), "4.png"))
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # borrar todo lo que no esté en un fondo blanco
+    image = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+
+    # Find plate
+    data = pytesseract.image_to_string(image, lang="eng", config="--psm 6")
+
+    print(data)
+    show_image(image, "Original")

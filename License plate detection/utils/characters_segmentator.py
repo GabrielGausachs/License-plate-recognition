@@ -6,10 +6,10 @@ import os
 
 config = {
     "print": {
-        "original": False,
-        "binary": False,
-        "inverted": False,
-        "character": False,
+        "original": True,
+        "binary": True,
+        "inverted": True,
+        "character": True,
         "final": True,
     }
 }
@@ -68,7 +68,7 @@ def segmentate_characters(input):
 
                 # Masking the part other than the number plate
                 mask = np.zeros(imageOut.shape, np.uint8)
-                new_image = cv2.drawContours(
+                imageOut = cv2.drawContours(
                     mask,
                     [box],
                     0,
