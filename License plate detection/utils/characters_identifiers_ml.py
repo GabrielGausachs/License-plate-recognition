@@ -9,8 +9,11 @@ import matplotlib.pyplot as plt
 from sklearn import datasets, metrics, svm
 from sklearn.model_selection import train_test_split
 
+import cv2
+import os
 
-def train_model(x_train, y_train):
+
+def train_model():
     """
     Function to identify characters in a license plate
     
@@ -20,6 +23,8 @@ def train_model(x_train, y_train):
         result: string of characters
     """
     
+    
+    digits = "C:/Users/arnau/OneDrive/Escritorio/ARNAU G/UNI/4t ENG DADES\PSIV II/PSIV-projects-1/License plate detection/img/digits"
     # flatten the images
     n_samples = len(digits.images)
     data = digits.images.reshape((n_samples, -1))
@@ -103,4 +108,4 @@ def test():
             
     
 if __name__ == '__main__':
-    test()
+    train_model()
