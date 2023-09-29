@@ -107,10 +107,6 @@ def test_with_plates(cutted=False):
         # Segmentate characters
         predicted_all = segmentate_characters(plate)
 
-        for i in range(len(predicted_all)):
-            # Show image
-            show_image(predicted_all[i], "Segmented character")
-
         # Predict characters in a segmented plate
         predicted_segmentated = identify_character(plate)
 

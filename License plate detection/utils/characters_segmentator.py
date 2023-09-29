@@ -4,6 +4,7 @@ import numpy as np
 import imutils
 import os
 
+
 config = {
     "print": {
         "original": True,
@@ -91,3 +92,7 @@ def segmentate_characters(input):
 
     show_image(imageOut, "Final")
     return characters
+
+
+if __name__ == "__main__":
+    segmentate_characters(cv2.imread("test.jpg"))
