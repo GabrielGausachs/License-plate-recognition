@@ -5,6 +5,7 @@ import numpy as np
 import imutils
 import os
 
+
 config = {
     "print": {
         "original": True,
@@ -61,8 +62,7 @@ def find_plate(img_route):
     show_image(binary_image, "Binary")
 
     contours = cv2.findContours(
-        binary_image.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE
-    )
+        binary_image.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     contours = imutils.grab_contours(contours)
     contours = sorted(contours, key=cv2.contourArea, reverse=True)[:10]
 
@@ -108,7 +108,8 @@ def find_plate(img_route):
         max_x, max_y = np.max(box, axis=0)
 
         # Recortar la placa de la imagen original
-        plate = image_final[min_y.astype(int) : max_y.astype(int), min_x.astype(int) : max_x.astype(int)]
+        plate = image_final[min_y.astype(int): max_y.astype(
+            int), min_x.astype(int): max_x.astype(int)]
 
     show_image(plate, "Final")
 

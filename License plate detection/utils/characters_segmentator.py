@@ -7,9 +7,9 @@ import os
 
 config = {
     "print": {
-        "original": True,
-        "binary": True,
-        "inverted": True,
+        "original": False,
+        "binary": False,
+        "inverted": False,
         "character": True,
         "final": True,
     }
@@ -25,15 +25,16 @@ def show_image(image, title="Image"):
 
 def segmentate_characters(input):
     # Create temp folder if it doesn't exist
-    if not os.path.exists("temp_digits"):
-        os.makedirs("temp_digits")
+    if not os.path.exists(os.path.join(os.path.dirname(__file__), "temp_digits")):
+        os.makedirs(os.path.join(os.path.dirname(__file__), "temp_digits"))
     else:
         # Delete all files in temp folder
-        for file in os.listdir("temp_digits"):
-            os.remove(os.path.join("temp_digits", file))
+        for file in os.listdir(os.path.join(os.path.dirname(__file__), "temp_digits")):
+            os.remove(os.path.join(os.path.dirname(
+                __file__), "temp_digits", file))
 
-    image=cv2.imread(input)
-    show_image(image,'Original')
+    image = cv2.imread(input)
+    show_image(image, "Original")
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     image = imutils.resize(image, width=250)
     show_image(image, "Original")
@@ -44,10 +45,13 @@ def segmentate_characters(input):
     inverted = cv2.bitwise_not(th3)
     show_image(inverted, "Inverted")
 
-    contours,hierarchy = cv2.findContours(inverted, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv2.findContours(
+        inverted, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
     imageOut = image.copy()
-    posible_contours=[]
-    characters=[]
+    posible_contours = []
+
+    characters = []  # List of characters
+
     for indx, cnt in enumerate(contours):
         if hierarchy[0][indx][3] == -1:
             x, y, w, h = cv2.boundingRect(cnt)
@@ -57,20 +61,21 @@ def segmentate_characters(input):
                 and y != 0
                 and x + w != imageOut.shape[1]
                 and y + h != imageOut.shape[0]
-                and cv2.contourArea(cnt) > 50):
-                    posible_contours.append(cnt)
+                and cv2.contourArea(cnt) > 50
+            ):
+                posible_contours.append(cnt)
 
-    posible_contours = sorted(posible_contours, key=lambda cnt: cv2.boundingRect(cnt)[0])
-    n=0
-    margen=5
+    posible_contours = sorted(
+        posible_contours, key=lambda cnt: cv2.boundingRect(cnt)[0])
+    n = 0
+    margen = 5
 
-    #if len(posible_contours>7) it means that the E is detected
-    if len(posible_contours)>7:
-        posible_contours=posible_contours[1:]
+    if len(posible_contours) > 7:  # E detected
+        posible_contours = posible_contours[1:]
     else:
         pass
     for cnt in posible_contours:
-        if n<7:
+        if n < 7:
             rect = cv2.minAreaRect(cnt)
             box = cv2.boxPoints(rect)
             box = np.intp(box)
@@ -81,20 +86,26 @@ def segmentate_characters(input):
             y -= margen
             w += 2 * margen
             h += 2 * margen
-            letter = image[y:y + h, x:x + w]
+            letter = image[y: y + h, x: x + w]
+            characters.append(letter)
             show_image(letter, "Character")
-            n+=1
+            cv2.imwrite(
+                os.path.join(
+                    os.path.dirname(__file__),
+                    "temp_digits",
+                    str(n) + ".png",
+                ),
+                letter,
+            )
+            n += 1
 
-    
-    show_image(imageOut,'final')
-
-    
+    show_image(imageOut, "final")
     return characters
 
 
 if __name__ == "__main__":
     path_file = os.path.abspath(__file__)
     direct = os.path.dirname(path_file)
-    path = os.path.join(direct+'\plate_test.png')
+    path = os.path.join(direct + "\plate_test.png")
     print(path)
     segmentate_characters(path)

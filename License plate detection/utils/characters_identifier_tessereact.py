@@ -58,11 +58,12 @@ def test_with_letter_dataset():
     Args:
         img (string): image file path
     """
+
     total_correct = 0
     total = 0
     img_directory = "../img/digits/"
     file_directory = os.path.dirname(os.path.realpath(__file__))
-    print(file_directory)
+
     for character in os.listdir(os.path.join(file_directory, img_directory)):
         print("Predicting character: ", character)
         for img in os.listdir(os.path.join(file_directory, img_directory + character)):
@@ -75,6 +76,7 @@ def test_with_letter_dataset():
                 total_correct += 1
             total += 1
         print("Total correct for {}: {}".format(character, total_correct))
+
     print("Accuracy: ", total_correct / total)
     if total_correct / total >= 0.9:
         print("Test passed")
@@ -84,7 +86,7 @@ def test_with_letter_dataset():
         return False
 
 
-def test_with_plates(cutted=False):
+def test_with_plates():
     """
     Function to test the identify_character function with the digits image files
 
