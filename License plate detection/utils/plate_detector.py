@@ -111,14 +111,16 @@ def find_plate(img_route):
         plate = image_final[min_y.astype(int): max_y.astype(
             int), min_x.astype(int): max_x.astype(int)]
 
+    cv2.imwrite(os.path.join(os.path.dirname(__file__), "temp_plate.png"), plate)
     show_image(plate, "Final")
 
     return plate
 
 
 if __name__ == "__main__":
-    carpeta_imagenes = "img/plates"
+    carpeta_imagenes = "../img/plates"
 
-    for nombre_archivo in os.listdir(os.path.join(os.getcwd(), carpeta_imagenes)):
-        ruta_completa = os.path.join(carpeta_imagenes, nombre_archivo)
+    for nombre_archivo in os.listdir(os.path.join(os.path.dirname(__file__), carpeta_imagenes)):
+        ruta_completa = os.path.join(os.path.dirname(
+            __file__), carpeta_imagenes, nombre_archivo)
         find_plate(ruta_completa)

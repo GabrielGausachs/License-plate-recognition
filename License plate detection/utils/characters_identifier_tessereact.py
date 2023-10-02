@@ -107,26 +107,29 @@ def test_with_plates():
         plate = find_plate(img_path)
 
         # Segmentate characters
-        predicted_all = segmentate_characters(plate)
+        predicted_all = segmentate_characters("temp_plate.png")
 
         # Predict characters in a segmented plate
-        predicted_segmentated = identify_character(plate)
+        predicted_full = identify_character(plate)
+
+        # Predict characters in a segmented plate
+        predicted_segmentated = []
+        for character in predicted_all:
+            predicted_segmentated.append(identify_character(character))
 
         # Show image and predicted characters
         print(f'Actual characters: {test_img.split(".")[0]}')
-        print(f"Predicted with full plate: {predicted_all}")
-        print("Predicted with segmented plate:")
-        for character in predicted_segmentated:
-            print(character)
+        print(f"Predicted with full plate: {predicted_full}")
+        print("Predicted with segmented plate: ", predicted_segmentated.join(""))
         show_image(plate, "Final")
 
         # Check if correct
-        # if predicted == test_img.split('.')[0]:
-        #     total_correct += 1
-        #     print(f'Correct! - {test_img} - {predicted}')
-        # else:
-        #     print(f'Incorrect! - {test_img} - {predicted}')
-        # total += 1
+        if predicted_full == test_img.split('.')[0] or predicted_segmentated.join("") == test_img.split('.')[0]:
+            total_correct += 1
+            print(f'Correct! - {test_img.split(".")[0]} - {predicted_full}' - {predicted_segmentated.join("")})
+        else:
+            print(f'Incorrect! - {test_img.split(".")[0]} - {predicted_full}' - {predicted_segmentated.join("")})
+        total += 1
 
     # Check results
     print("Accuracy: ", total_correct / total)
@@ -141,39 +144,39 @@ def test_with_plates():
 if __name__ == "__main__":
     test_with_plates()
 
-    # Read image
-    image = cv2.imread(os.path.join(os.path.dirname(__file__), "test_plate.png"))
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    # # Read image
+    # image = cv2.imread(os.path.join(os.path.dirname(__file__), "test_plate.png"))
+    # image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    # borrar todo lo que no esté en un fondo blanco
-    image = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+    # # borrar todo lo que no esté en un fondo blanco
+    # image = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
 
-    # Find plate
-    data = pytesseract.image_to_string(image, lang="eng", config="--psm 6")
+    # # Find plate
+    # data = pytesseract.image_to_string(image, lang="eng", config="--psm 6")
 
-    print(data)
-    show_image(image, "Original")
+    # print(data)
+    # show_image(image, "Original")
 
-    image = cv2.imread(os.path.join(os.path.dirname(__file__), "C.png"))
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    # image = cv2.imread(os.path.join(os.path.dirname(__file__), "C.png"))
+    # image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    # borrar todo lo que no esté en un fondo blanco
-    image = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+    # # borrar todo lo que no esté en un fondo blanco
+    # image = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
 
-    # Find plate
-    data = pytesseract.image_to_string(image, lang="eng", config="--psm 6")
+    # # Find plate
+    # data = pytesseract.image_to_string(image, lang="eng", config="--psm 6")
 
-    print(data)
-    show_image(image, "Original")
+    # print(data)
+    # show_image(image, "Original")
 
-    image = cv2.imread(os.path.join(os.path.dirname(__file__), "4.png"))
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    # image = cv2.imread(os.path.join(os.path.dirname(__file__), "4.png"))
+    # image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    # borrar todo lo que no esté en un fondo blanco
-    image = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+    # # borrar todo lo que no esté en un fondo blanco
+    # image = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
 
-    # Find plate
-    data = pytesseract.image_to_string(image, lang="eng", config="--psm 6")
+    # # Find plate
+    # data = pytesseract.image_to_string(image, lang="eng", config="--psm 6")
 
-    print(data)
-    show_image(image, "Original")
+    # print(data)
+    # show_image(image, "Original")

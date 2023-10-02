@@ -7,7 +7,7 @@ import os
 
 config = {
     "print": {
-        "original": False,
+        "original": True,
         "binary": False,
         "inverted": False,
         "character": True,
@@ -33,7 +33,7 @@ def segmentate_characters(input):
             os.remove(os.path.join(os.path.dirname(
                 __file__), "temp_digits", file))
 
-    image = cv2.imread(input)
+    image = cv2.imread(os.path.join(os.path.dirname(__file__), input))
     show_image(image, "Original")
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     image = imutils.resize(image, width=250)
@@ -93,7 +93,7 @@ def segmentate_characters(input):
                 os.path.join(
                     os.path.dirname(__file__),
                     "temp_digits",
-                    str(n) + ".png",
+                    "temp_digit_" + str(n) + ".png",
                 ),
                 letter,
             )
