@@ -8,12 +8,13 @@ import sys
 import cv2
 import pytesseract
 from matplotlib import pyplot as plt
+import Levenshtein
 
 from test_helper import test_helper
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from utils.characters_identifier_tessereact import identify_character
+from utils.characters_identifier_ocr import identify_character
 from utils.characters_segmentator import segmentate_characters
 from utils.plate_detector import find_plate
 

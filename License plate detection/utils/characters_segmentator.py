@@ -12,7 +12,7 @@ config = {
         "binary": False,
         "inverted": False,
         "character": False,
-        "final": True,
+        "final": False,
     }
 }
 

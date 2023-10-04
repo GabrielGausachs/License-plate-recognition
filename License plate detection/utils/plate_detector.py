@@ -8,12 +8,12 @@ import os
 
 config = {
     "print": {
-        "original": True,
+        "original": False,
         "gray": False,
         "blackhat": False,
         "dilate": False,
         "binary": False,
-        "final": True,
+        "final": False,
     }
 }
 
