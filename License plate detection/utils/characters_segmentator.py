@@ -7,10 +7,11 @@ import os
 
 config = {
     "print": {
-        "original": True,
+        "original": False,
+        "gray": False,
         "binary": False,
         "inverted": False,
-        "character": True,
+        "character": False,
         "final": True,
     }
 }
@@ -24,6 +25,7 @@ def show_image(image, title="Image"):
 
 
 def segmentate_characters(input):
+
     # Create temp folder if it doesn't exist
     if not os.path.exists(os.path.join(os.path.dirname(__file__), "temp_digits")):
         os.makedirs(os.path.join(os.path.dirname(__file__), "temp_digits"))
@@ -37,7 +39,7 @@ def segmentate_characters(input):
     show_image(image, "Original")
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     image = imutils.resize(image, width=250)
-    show_image(image, "Original")
+    show_image(image, "Gray")
 
     ret3, th3 = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY)
     show_image(th3, "Binary")
@@ -101,11 +103,3 @@ def segmentate_characters(input):
 
     show_image(imageOut, "final")
     return characters
-
-
-if __name__ == "__main__":
-    path_file = os.path.abspath(__file__)
-    direct = os.path.dirname(path_file)
-    path = os.path.join(direct + "\plate_test.png")
-    print(path)
-    segmentate_characters(path)

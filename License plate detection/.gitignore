@@ -1,2 +1,5 @@
 *.jpg
 temp_digit*
+*.png
+*.zip
+*.pyc

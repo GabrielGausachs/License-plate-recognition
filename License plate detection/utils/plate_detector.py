@@ -114,13 +114,4 @@ def find_plate(img_route):
     cv2.imwrite(os.path.join(os.path.dirname(__file__), "temp_plate.png"), plate)
     show_image(plate, "Final")
 
-    return plate
-
-
-if __name__ == "__main__":
-    carpeta_imagenes = "../img/plates"
-
-    for nombre_archivo in os.listdir(os.path.join(os.path.dirname(__file__), carpeta_imagenes)):
-        ruta_completa = os.path.join(os.path.dirname(
-            __file__), carpeta_imagenes, nombre_archivo)
-        find_plate(ruta_completa)
+    return cv2.cvtColor(plate, cv2.COLOR_BGR2GRAY)
