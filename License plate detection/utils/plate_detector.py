@@ -35,7 +35,7 @@ def erode(img, kernel_size, iters):
     return cv2.erode(img, kernel, iterations=iters)
 
 
-def find_plate(img_route):
+def find_plate(img_route): 
     image = cv2.imread(img_route)
     show_image(image, "Original")
     image = imutils.resize(image, width=500)
@@ -77,17 +77,17 @@ def find_plate(img_route):
             box = cv2.boxPoints(rect)
             for i in range(len(box)):
                 if i == 0:
-                    box[i][0] -= 10
-                    box[i][1] += 10
+                    box[i][0] -= 12  # Disminuir x en 12 unidades
+                    box[i][1] += 12  # Aumentar y en 12 unidades
                 elif i == 1:
-                    box[i][0] += 10
-                    box[i][1] += 10
+                    box[i][0] += 12  # Aumentar x en 12 unidades
+                    box[i][1] += 12  # Aumentar y en 12 unidades
                 elif i == 2:
-                    box[i][0] += 10
-                    box[i][1] -= 10
+                    box[i][0] += 12  # Aumentar x en 12 unidades
+                    box[i][1] -= 12  # Disminuir y en 12 unidades
                 elif i == 3:
-                    box[i][0] -= 10
-                    box[i][1] -= 10
+                    box[i][0] -= 12  # Disminuir x en 12 unidades
+                    box[i][1] -= 12  # Disminuir y en 12 unidades
             break
 
     # Draw the contours
@@ -114,4 +114,4 @@ def find_plate(img_route):
     cv2.imwrite(os.path.join(os.path.dirname(__file__), "temp_plate.png"), plate)
     show_image(plate, "Final")
 
-    return cv2.cvtColor(plate, cv2.COLOR_BGR2GRAY)
+    return cv2.cvtColor(plate, cv2.COLOR_BGR2GRAY), box

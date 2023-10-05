@@ -24,7 +24,7 @@ def show_image(image, title="Image"):
         plt.show()
 
 
-def segmentate_characters(input):
+def segmentate_characters(input="temp_plate.png"):
 
     # Create temp folder if it doesn't exist
     if not os.path.exists(os.path.join(os.path.dirname(__file__), "temp_digits")):
