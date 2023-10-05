@@ -9,11 +9,12 @@ import os
 config = {
     "print": {
         "original": False,
-        "gray": False,
+        "gray": True,
         "blackhat": False,
         "dilate": False,
         "binary": False,
-        "final": False,
+        "original with box": False,
+        "final": True,
     }
 }
 
@@ -39,6 +40,23 @@ def find_plate(img_route):
     image = cv2.imread(img_route)
     show_image(image, "Original")
     image = imutils.resize(image, width=500)
+
+    # # Define the cropping percentage (30% from the edges)
+    # percentage_to_crop = 0.3
+
+    # # Calculate the cropping size
+    # height, width = image.shape[:2]
+    # cropped_height = int(height * (1 - percentage_to_crop))
+    # cropped_width = int(width * (1 - percentage_to_crop))
+
+    # # Calculate the starting and ending coordinates for cropping
+    # start_x = (width - cropped_width) // 2
+    # start_y = (height - cropped_height) // 2
+    # end_x = start_x + cropped_width
+    # end_y = start_y + cropped_height
+
+    # # Perform the cropping
+    # cropped_image = image[start_y:end_y, start_x:end_x]
 
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     show_image(gray, "Gray")
@@ -77,17 +95,17 @@ def find_plate(img_route):
             box = cv2.boxPoints(rect)
             for i in range(len(box)):
                 if i == 0:
-                    box[i][0] -= 12  # Disminuir x en 12 unidades
-                    box[i][1] += 12  # Aumentar y en 12 unidades
+                    box[i][0] -= 20  # Disminuir x en -20 unidades
+                    box[i][1] -= 20  # Aumentar y en -20 unidades
                 elif i == 1:
-                    box[i][0] += 12  # Aumentar x en 12 unidades
-                    box[i][1] += 12  # Aumentar y en 12 unidades
+                    box[i][0] += 20  # Aumentar x en -20 unidades
+                    box[i][1] -= 20  # Aumentar y en -20 unidades
                 elif i == 2:
-                    box[i][0] += 12  # Aumentar x en 12 unidades
-                    box[i][1] -= 12  # Disminuir y en 12 unidades
+                    box[i][0] += 20  # Aumentar x en -20 unidades
+                    box[i][1] += 20  # Disminuir y en -20 unidades
                 elif i == 3:
-                    box[i][0] -= 12  # Disminuir x en 12 unidades
-                    box[i][1] -= 12  # Disminuir y en 12 unidades
+                    box[i][0] -= 20  # Disminuir x en -20 unidades
+                    box[i][1] += 20  # Disminuir y en -20 unidades
             break
 
     # Draw the contours
@@ -98,7 +116,7 @@ def find_plate(img_route):
         (0, 0, 255),
         2,
     )
-    show_image(image_final, "Final")
+    show_image(image_final, "Original with box")
 
     # Crop the plate
     if box.size > 0:
