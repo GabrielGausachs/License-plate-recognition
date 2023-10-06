@@ -7,12 +7,12 @@ import os
 
 config = {
     "print": {
-        "original": False,
+        "original": True,
         "gray": False,
         "binary": False,
         "inverted": False,
         "character": False,
-        "final": False,
+        "final": True,
     }
 }
 
