@@ -9,8 +9,8 @@ config = {
     "print": {
         "original": True,
         "gray": False,
-        "binary": False,
-        "inverted": False,
+        "binary": True,
+        "inverted": True,
         "character": False,
         "final": True,
     }
