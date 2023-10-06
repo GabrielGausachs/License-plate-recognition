@@ -14,7 +14,7 @@ config = {
         "dilate": False,
         "binary": False,
         "original with box": False,
-        "final": True,
+        "final": False,
     }
 }
 
@@ -95,17 +95,17 @@ def find_plate(img_route):
             box = cv2.boxPoints(rect)
             for i in range(len(box)):
                 if i == 0:
-                    box[i][0] -= 40  # Disminuir x en -20 unidades
-                    box[i][1] -= 40  # Aumentar y en -20 unidades
+                    box[i][0] -= 15  # Disminuir x en -20 unidades
+                    box[i][1] -= 15  # Aumentar y en -20 unidades
                 elif i == 1:
-                    box[i][0] += 40  # Aumentar x en -20 unidades
-                    box[i][1] -= 40  # Aumentar y en -20 unidades
+                    box[i][0] += 15  # Aumentar x en -20 unidades
+                    box[i][1] -= 15  # Aumentar y en -20 unidades
                 elif i == 2:
-                    box[i][0] += 40  # Aumentar x en -20 unidades
-                    box[i][1] += 40  # Disminuir y en -20 unidades
+                    box[i][0] += 15  # Aumentar x en -20 unidades
+                    box[i][1] += 15  # Disminuir y en -20 unidades
                 elif i == 3:
-                    box[i][0] -= 40  # Disminuir x en -20 unidades
-                    box[i][1] += 40  # Disminuir y en -20 unidades
+                    box[i][0] -= 15  # Disminuir x en -20 unidades
+                    box[i][1] += 15  # Disminuir y en -20 unidades
             break
 
     # Draw the contours

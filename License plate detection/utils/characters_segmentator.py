@@ -7,9 +7,9 @@ import os
 
 config = {
     "print": {
-        "original": True,
+        "original": False,
         "gray": False,
-        "binary": True,
+        "binary": False,
         "inverted": True,
         "character": False,
         "final": True,
@@ -41,11 +41,12 @@ def segmentate_characters(input="temp_plate.png"):
     image = imutils.resize(image, width=250)
     show_image(image, "Gray")
 
-    ret3, th3 = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY)
-    show_image(th3, "Binary")
+    ret3, th3 = cv2.threshold(image, 130, 255, cv2.THRESH_BINARY)
+    show_image(th3, "binary")
 
     inverted = cv2.bitwise_not(th3)
     show_image(inverted, "Inverted")
+
 
     contours, hierarchy = cv2.findContours(
         inverted, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
@@ -63,8 +64,15 @@ def segmentate_characters(input="temp_plate.png"):
                 and y != 0
                 and x + w != imageOut.shape[1]
                 and y + h != imageOut.shape[0]
-                and cv2.contourArea(cnt) > 50
+                and cv2.contourArea(cnt) > 48
             ):
+                #if w>25:
+                #    left_half_contour = cnt[:, :int(w/2), :]
+                #    right_half_contour = cnt[:, int(w/2)+1:, :]
+                #    posible_contours.append(left_half_contour)
+                #    posible_contours.append(right_half_contour)
+                #else:
+
                 posible_contours.append(cnt)
 
     posible_contours = sorted(
@@ -84,6 +92,7 @@ def segmentate_characters(input="temp_plate.png"):
             cv2.drawContours(imageOut, [box], 0, (255, 0, 255), 2)
 
             (x, y, w, h) = cv2.boundingRect(cnt)
+            print(w)
             x -= margen
             y -= margen
             w += 2 * margen
