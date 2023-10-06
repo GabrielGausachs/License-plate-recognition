@@ -126,7 +126,7 @@ def find_plate(img_route):
         max_x, max_y = np.max(box, axis=0)
 
         # Recortar la placa de la imagen original
-        plate = image_final[min_y.astype(int): max_y.astype(
+        plate = image[min_y.astype(int): max_y.astype(
             int), min_x.astype(int): max_x.astype(int)]
 
     cv2.imwrite(os.path.join(os.path.dirname(__file__), "temp_plate.png"), plate)
