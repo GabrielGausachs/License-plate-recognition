@@ -60,7 +60,7 @@ def segmentate_characters(input="temp_plate.png"):
     characters = []  # List of characters
 
     for indx, cnt in enumerate(contours):
-        if hierarchy[0][indx][3] == -1 and hierarchy[0][indx][2] == -1:
+        if hierarchy[0][indx][3] == -1:
             x, y, w, h = cv2.boundingRect(cnt)
 
             if (
