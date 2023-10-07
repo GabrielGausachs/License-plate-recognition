@@ -52,15 +52,19 @@ def segmentate_characters(input="temp_plate.png"):
     show_image(inverted, "Inverted")
 
 
+    #contours, hierarchy = cv2.findContours(
+    #    inverted, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
+    #imageOut = image.copy()
+    #posible_contours = []
     contours, hierarchy = cv2.findContours(
-        inverted, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
+    inverted, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     imageOut = image.copy()
     posible_contours = []
 
     characters = []  # List of characters
 
     for indx, cnt in enumerate(contours):
-        if hierarchy[0][indx][3] == -1:
+        if hierarchy[0][indx][3] == -1 and hierarchy[0][indx][2] == -1:
             x, y, w, h = cv2.boundingRect(cnt)
 
             if (
@@ -68,7 +72,7 @@ def segmentate_characters(input="temp_plate.png"):
                 and y != 0
                 and x + w != imageOut.shape[1]
                 and y + h != imageOut.shape[0]
-                and cv2.contourArea(cnt) > 35
+                and cv2.contourArea(cnt) > 38
             ):
                 # if w > 25:
                 #     # Calculate the center of the bounding rectangle
