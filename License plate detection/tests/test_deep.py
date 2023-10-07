@@ -12,4 +12,4 @@ from utils.characters_identifier_deep import identify_character
 
 
 if __name__ == "__main__":
-    validate_images(identify_character, False, True)
+    validate_images(identify_character, True, True)

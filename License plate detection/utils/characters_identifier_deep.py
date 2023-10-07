@@ -2,15 +2,22 @@
 Identify characters in a license plate
 using Python Library tesseract
 """
-
+import numpy as np
 import cv2
+import os
+
 from matplotlib import pyplot as plt
 from tensorflow.keras.models import load_model
+import imutils
+
+
 
 # Load all saved h5 models
-model_cnn_1 = load_model("saved_models/model_cnn.h5")
-model_cnn_2 = load_model("saved_models/model_cnn_2.h5")
-model_nn = load_model("saved_models/model_nn.h5")
+source_folder = os.path.join(os.getcwd(), 'License plate detection', 'utils')
+
+model_cnn_1 = load_model(os.path.join(source_folder,"saved_models\\model_cnn.h5"))
+model_cnn_2 = load_model(os.path.join(source_folder,"saved_models\\model_cnn_2.h5"))
+model_nn = load_model(os.path.join(source_folder,"saved_models\\model_nn.h5"))
 
 
 def show_image(image, title="Image"):
@@ -19,7 +26,7 @@ def show_image(image, title="Image"):
     plt.show()
 
 
-def identify_character(model_name, bw_img):
+def identify_character(bw_img, model_name= 'model_nn'):
     """
     Function to identify characters in a license plate using a Deep Learning model
 
@@ -36,15 +43,23 @@ def identify_character(model_name, bw_img):
 
     if model_name == "model_cnn":
         model_to_use = model_cnn_1
+        resized_image = cv2.resize(thresh, (32, 40))
+        resized_image = resized_image.reshape(1, 40, 32, 1)
     elif model_name == "model_cnn_2":
         model_to_use = model_cnn_2
+        #We need shape (1,96,96,3)
+        resized_image = cv2.resize(thresh, (32, 40))
+        resized_image = resized_image.reshape(1, 40, 32, 1)
     elif model_name == "model_nn":
+        resized_image = cv2.resize(thresh, (32, 40))
+        resized_image = resized_image.reshape(1, 40, 32, 1)
         model_to_use = model_nn
     else:
         raise Exception("Model not found")
 
-    # Predict character
-    data = model_to_use.predict(thresh.reshape(1, 28, 28, 1))
+
+
+    data = model_to_use.predict(resized_image)
     data = data.argmax()
     data = chr(data + 65)
 
