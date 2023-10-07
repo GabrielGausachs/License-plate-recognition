@@ -23,6 +23,10 @@ def show_image(image, title="Image"):
         plt.title(title)
         plt.show()
 
+def erode(img, kernel_size, iters):
+    kernel = np.ones(kernel_size, np.uint8)
+    return cv2.erode(img, kernel, iterations=iters)
+
 
 def segmentate_characters(input="temp_plate.png"):
 
@@ -41,7 +45,7 @@ def segmentate_characters(input="temp_plate.png"):
     image = imutils.resize(image, width=250)
     show_image(image, "Gray")
 
-    ret3, th3 = cv2.threshold(image, 130, 255, cv2.THRESH_BINARY)
+    ret3, th3 = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY)
     show_image(th3, "binary")
 
     inverted = cv2.bitwise_not(th3)
@@ -64,16 +68,21 @@ def segmentate_characters(input="temp_plate.png"):
                 and y != 0
                 and x + w != imageOut.shape[1]
                 and y + h != imageOut.shape[0]
-                and cv2.contourArea(cnt) > 48
+                and cv2.contourArea(cnt) > 35
             ):
-                #if w>25:
-                #    left_half_contour = cnt[:, :int(w/2), :]
-                #    right_half_contour = cnt[:, int(w/2)+1:, :]
-                #    posible_contours.append(left_half_contour)
-                #    posible_contours.append(right_half_contour)
-                #else:
+                # if w > 25:
+                #     # Calculate the center of the bounding rectangle
+                #     center_x = x + w // 2
+                #     center_y = y + h // 2
+                    
+                #     # Create two new contours by splitting the original contour
+                #     contour1 = cnt[:, :center_x, :]
+                #     contour2 = cnt[:, center_x:, :]
+                #     posible_contours.append(contour1)
+                #     posible_contours.append(contour2)
 
-                posible_contours.append(cnt)
+                # else:
+                    posible_contours.append(cnt)
 
     posible_contours = sorted(
         posible_contours, key=lambda cnt: cv2.boundingRect(cnt)[0])
