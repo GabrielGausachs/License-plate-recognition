@@ -93,12 +93,12 @@ def segmentate_characters(input="temp_plate.png"):
     n = 0
     margen = 5
 
-    if len(posible_contours) > 7:  # E detected
-        posible_contours = posible_contours[1:]
-    else:
-        pass
+    #if len(posible_contours) > 7:  # E detected
+        #posible_contours = posible_contours[1:]
+    #else:
+        #pass
     for cnt in posible_contours:
-        if n < 7:
+        #if n < 7:
             rect = cv2.minAreaRect(cnt)
             box = cv2.boxPoints(rect)
             box = np.intp(box)
