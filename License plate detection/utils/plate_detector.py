@@ -8,7 +8,7 @@ import os
 
 config = {
     "print": {
-        "original": False,
+        "original": True,
         "gray": False,
         "blackhat": False,
         "dilate": False,

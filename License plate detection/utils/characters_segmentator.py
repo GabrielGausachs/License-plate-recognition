@@ -7,10 +7,10 @@ import os
 
 config = {
     "print": {
-        "original": False,
+        "original": True,
         "gray": False,
         "binary": False,
-        "inverted": True,
+        "inverted": False,
         "character": False,
         "final": True,
     }
@@ -52,12 +52,8 @@ def segmentate_characters(input="temp_plate.png"):
     show_image(inverted, "Inverted")
 
 
-    #contours, hierarchy = cv2.findContours(
-    #    inverted, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
-    #imageOut = image.copy()
-    #posible_contours = []
     contours, hierarchy = cv2.findContours(
-    inverted, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        inverted, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
     imageOut = image.copy()
     posible_contours = []
 
@@ -93,12 +89,12 @@ def segmentate_characters(input="temp_plate.png"):
     n = 0
     margen = 5
 
-    #if len(posible_contours) > 7:  # E detected
-        #posible_contours = posible_contours[1:]
-    #else:
-        #pass
+    if len(posible_contours) > 7:  # E detected
+        posible_contours = posible_contours[1:]
+    else:
+        pass
     for cnt in posible_contours:
-        #if n < 7:
+        if n < 7:
             rect = cv2.minAreaRect(cnt)
             box = cv2.boxPoints(rect)
             box = np.intp(box)
