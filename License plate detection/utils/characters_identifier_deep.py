@@ -8,16 +8,15 @@ import os
 
 from matplotlib import pyplot as plt
 from tensorflow.keras.models import load_model
-import imutils
-
-
+import os
 
 # Load all saved h5 models
-source_folder = os.path.join(os.getcwd(), 'License plate detection', 'utils')
-
-model_cnn_1 = load_model(os.path.join(source_folder,"saved_models\\model_cnn.h5"))
-model_cnn_2 = load_model(os.path.join(source_folder,"saved_models\\model_cnn_2.h5"))
-model_nn = load_model(os.path.join(source_folder,"saved_models\\model_nn.h5"))
+model_cnn_1 = load_model(os.path.join(os.path.dirname(
+    __file__), "saved_models/model_cnn.h5"))
+model_cnn_2 = load_model(os.path.join(os.path.dirname(
+    __file__), "saved_models/model_cnn_2.h5"))
+model_nn = load_model(os.path.join(os.path.dirname(
+    __file__), "saved_models/model_nn.h5"))
 
 
 def show_image(image, title="Image"):
@@ -56,6 +55,8 @@ def identify_character(bw_img, model_name= 'model_nn'):
         model_to_use = model_nn
     else:
         raise Exception("Model not found")
+    
+    
 
 
 

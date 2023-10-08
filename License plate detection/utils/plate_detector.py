@@ -8,7 +8,7 @@ import os
 
 config = {
     "print": {
-        "original": True,
+        "original": False,
         "gray": False,
         "blackhat": False,
         "dilate": False,
@@ -36,7 +36,7 @@ def erode(img, kernel_size, iters):
     return cv2.erode(img, kernel, iterations=iters)
 
 
-def find_plate(img_route): 
+def find_plate(img_route):
     image = cv2.imread(img_route)
     show_image(image, "Original")
     image = imutils.resize(image, width=500)
@@ -95,17 +95,17 @@ def find_plate(img_route):
             box = cv2.boxPoints(rect)
             for i in range(len(box)):
                 if i == 0:
-                    box[i][0] -= 15  # Disminuir x en -20 unidades
-                    box[i][1] -= 15  # Aumentar y en -20 unidades
+                    box[i][0] -= 15  # Disminuir x en -15 unidades
+                    box[i][1] -= 15  # Aumentar y en -15 unidades
                 elif i == 1:
-                    box[i][0] += 15  # Aumentar x en -20 unidades
-                    box[i][1] -= 15  # Aumentar y en -20 unidades
+                    box[i][0] += 15  # Aumentar x en -15 unidades
+                    box[i][1] -= 15  # Aumentar y en -15 unidades
                 elif i == 2:
-                    box[i][0] += 15  # Aumentar x en -20 unidades
-                    box[i][1] += 15  # Disminuir y en -20 unidades
+                    box[i][0] += 15  # Aumentar x en -15 unidades
+                    box[i][1] += 15  # Disminuir y en -15 unidades
                 elif i == 3:
-                    box[i][0] -= 15  # Disminuir x en -20 unidades
-                    box[i][1] += 15  # Disminuir y en -20 unidades
+                    box[i][0] -= 15  # Disminuir x en -15 unidades
+                    box[i][1] += 15  # Disminuir y en -15 unidades
             break
 
     # Draw the contours

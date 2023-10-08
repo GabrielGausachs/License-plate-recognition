@@ -37,6 +37,9 @@ def check_error(actual_characters, predicted_full, predicted_segmented):
         accuracy_full_plate = None
     levenshtein_distance_segmented_plate = Levenshtein.distance(predicted_segmented, actual_characters)
 
+    # Calculate accuracy for full plate
+    if predicted_full:
+        accuracy_full_plate = sum(1 for a, b in zip(predicted_full, actual_characters) if a == b) / len(actual_characters) * 100
 
     # Calculate accuracy for segmented plate
     accuracy_segmented_plate = sum(1 for a, b in zip(predicted_segmented, actual_characters) if a == b) / len(actual_characters) * 100
@@ -54,10 +57,13 @@ def check_error(actual_characters, predicted_full, predicted_segmented):
     print(f"Levenshtein distance:    {levenshtein_distance_segmented_plate} - {'Correct' if accuracy_segmented_plate == 100 else 'Incorrect'}")
     print(f"Accuracy:                {accuracy_segmented_plate:.2f}% - {'Correct' if accuracy_segmented_plate == 100 else 'Incorrect'}")
 
-    return accuracy_full_plate, accuracy_segmented_plate
+    if predicted_full:
+        return accuracy_full_plate, accuracy_segmented_plate
+    else:
+        return 0, accuracy_segmented_plate
 
 
-def validate_images(identify_character_funct, validate_with_full_plate=False, print_compare_img=False):
+def validate_images(identify_character_funct, validate_with_full_plate=False, print_compare_img=False, model=None):
     """
     Function to test the identify_character function with the digits image files
 
@@ -77,6 +83,9 @@ def validate_images(identify_character_funct, validate_with_full_plate=False, pr
 
     for test_img in os.listdir(os.path.join(file_directory, img_directory)):
 
+        print("\n--------------------")
+        print(f"Test image: {test_img}")
+
         actual_characters = test_img.split(".")[0]
         img_path = os.path.join(file_directory, img_directory + test_img)
 
@@ -88,15 +97,15 @@ def validate_images(identify_character_funct, validate_with_full_plate=False, pr
 
         if validate_with_full_plate:
             # Predict characters in a segmented plate
-            predicted_full = identify_character_funct(plate)
+            predicted_full = identify_character_funct(plate) if not model is None else identify_character_funct(model, plate)
             predicted_full = ''.join(e for e in predicted_full if e.isalnum())
 
         # Predict characters in a segmented plate
         predicted_segmentated = []
         for character in segmentated_chars:
-            character_result = identify_character_funct(character).strip()
+            character_result = identify_character_funct(character).strip() if not model else identify_character_funct(model, character).strip()
+            predicted_segmentated.append(''.join(e for e in character_result if e.isalnum()))
 
-        predicted_segmentated.append(''.join(e for e in character_result if e.isalnum()))
         predicted_segmentated = "".join(predicted_segmentated).replace(" ", "")
 
         # Call test_helper for accuracy calculation and logging
