@@ -97,13 +97,13 @@ def validate_images(identify_character_funct, validate_with_full_plate=False, pr
 
         if validate_with_full_plate:
             # Predict characters in a segmented plate
-            predicted_full = identify_character_funct(plate) if not model is None else identify_character_funct(model, plate)
+            predicted_full = identify_character_funct(plate) if not model is None else identify_character_funct(plate, model)
             predicted_full = ''.join(e for e in predicted_full if e.isalnum())
 
         # Predict characters in a segmented plate
         predicted_segmentated = []
         for character in segmentated_chars:
-            character_result = identify_character_funct(character).strip() if not model else identify_character_funct(model, character).strip()
+            character_result = identify_character_funct(character).strip() if not model else identify_character_funct(character, model).strip()
             predicted_segmentated.append(''.join(e for e in character_result if e.isalnum()))
 
         predicted_segmentated = "".join(predicted_segmentated).replace(" ", "")

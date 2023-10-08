@@ -43,9 +43,26 @@ def test_with_plates_big_dataset():
         try:
             img, box = find_plate(image)  # Asume que find_plate está definida correctamente
 
+            for i in range(len(box)):
+                if i == 0:
+                    box[i][0] -= 30  # Disminuir x en -30 unidades
+                    box[i][1] -= 30  # Aumentar y en -30 unidades
+                elif i == 1:
+                    box[i][0] += 30  # Aumentar x en -30 unidades
+                    box[i][1] -= 30  # Aumentar y en -30 unidades
+                elif i == 2:
+                    box[i][0] += 30  # Aumentar x en -30 unidades
+                    box[i][1] += 30  # Disminuir y en -30 unidades
+                elif i == 3:
+                    box[i][0] -= 30  # Disminuir x en -30 unidades
+                    box[i][1] += 30  # Disminuir y en -30 unidades
+
             # xmin, ymin, xmax, ymax of box
-            min_x, min_y = np.min(box, axis=0)
-            max_x, max_y = np.max(box, axis=0)
+            print(box)
+            max_x = max(box[0][0], box[1][0], box[2][0], box[3][0])
+            min_x = min(box[0][0], box[1][0], box[2][0], box[3][0])
+            max_y = max(box[0][1], box[1][1], box[2][1], box[3][1])
+            min_y = min(box[0][1], box[1][1], box[2][1], box[3][1])
 
             # Redondear las coordenadas a números enteros
             xmin = int(xmin)
@@ -66,19 +83,21 @@ def test_with_plates_big_dataset():
             # Dibujar las cajas en la imagen
             cv2.rectangle(image, (xmin, ymin), (xmax, ymax), (0, 255, 0), 2)
 
-            image = imutils.resize(image, width=500)
-            cv2.rectangle(image, (min_x, min_y), (max_x, max_y), (0, 0, 255), 2)
+            image_2 = imutils.resize(image, width=500)
+            cv2.rectangle(image_2, (min_x, min_y), (max_x, max_y), (0, 0, 255), 2)
 
             # Mostrar la imagen con ambas cajas dibujadas
-            cv2.imshow("Imagen con cajas", image)
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
+            # cv2.imshow("Imagen con cajas", image_2)
+            # cv2.waitKey(0)
+            # cv2.destroyAllWindows()
 
-            if min_x <= xmin and min_y <= ymin and max_x >= xmax and max_y >= ymax:
+            factor = image.shape[0] / image_2.shape[0]
+
+            if min_x*factor <= xmin and min_y*factor <= ymin and max_x*factor >= xmax and max_y*factor >= ymax:
                 count += 1
-                print("Test passed")
+                print("\nTest passed\n")
             else:
-                print("Test failed")
+                print("\nTest failed\n")
 
             if min_x <= xmin:
                 parcial_test += 0.25
@@ -94,7 +113,7 @@ def test_with_plates_big_dataset():
     print("Accuracy: ", count /
           len(os.listdir(os.path.join(os.path.dirname(__file__), carpeta_imagenes))))
     print("There are ", count, " of ", len(os.listdir(os.path.join(
-        os.path.dirname(__file__), carpeta_imagenes)))*4, "points inside")
+        os.path.dirname(__file__), carpeta_imagenes))), "points inside")
 
 
 if __name__ == "__main__":

@@ -7,12 +7,13 @@ import os
 
 config = {
     "print": {
-        "original": True,
+        "original": False,
         "gray": False,
         "binary": False,
         "inverted": False,
         "character": False,
-        "final": True,
+        "mask": False,
+        "final": False,
     }
 }
 
@@ -23,9 +24,45 @@ def show_image(image, title="Image"):
         plt.title(title)
         plt.show()
 
+
 def erode(img, kernel_size, iters):
     kernel = np.ones(kernel_size, np.uint8)
     return cv2.erode(img, kernel, iterations=iters)
+
+
+def character_cleaner(img):
+    # Apply threshold to get image with only black and white
+    ret, thresh = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY_INV)
+
+    # Invert image to get black letters on a white background
+    inverted = cv2.bitwise_not(thresh)
+
+    contours, hierarchy = cv2.findContours(
+        inverted, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
+
+    imageOut = img.copy()
+    possible_contours = []
+
+    for indx, cnt in enumerate(contours):
+        x, y, w, h = cv2.boundingRect(cnt)
+
+        # Si el contorno no es el padre (el contorno exterior) y tiene un area mayor a 38
+        if hierarchy[0][indx][3] != -1 and cv2.contourArea(cnt) > 40:
+            possible_contours.append(cnt)
+
+    possible_contours = sorted(
+        possible_contours, key=lambda cnt: cv2.boundingRect(cnt)[0])
+
+    for cnt in possible_contours:
+        rect = cv2.minAreaRect(cnt)
+        box = cv2.boxPoints(rect)
+        box = np.intp(box)
+        cv2.drawContours(imageOut, [box], 0, (255, 0, 255), 1)
+
+        (x, y, w, h) = cv2.boundingRect(cnt)
+        letter = img[y: y + h, x: x + w]
+
+    return letter
 
 
 def segmentate_characters(input="temp_plate.png"):
@@ -51,7 +88,6 @@ def segmentate_characters(input="temp_plate.png"):
     inverted = cv2.bitwise_not(th3)
     show_image(inverted, "Inverted")
 
-
     contours, hierarchy = cv2.findContours(
         inverted, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
     imageOut = image.copy()
@@ -68,21 +104,9 @@ def segmentate_characters(input="temp_plate.png"):
                 and y != 0
                 and x + w != imageOut.shape[1]
                 and y + h != imageOut.shape[0]
-                and cv2.contourArea(cnt) > 38
+                and cv2.contourArea(cnt) > 40
             ):
-                # if w > 25:
-                #     # Calculate the center of the bounding rectangle
-                #     center_x = x + w // 2
-                #     center_y = y + h // 2
-                    
-                #     # Create two new contours by splitting the original contour
-                #     contour1 = cnt[:, :center_x, :]
-                #     contour2 = cnt[:, center_x:, :]
-                #     posible_contours.append(contour1)
-                #     posible_contours.append(contour2)
-
-                # else:
-                    posible_contours.append(cnt)
+                posible_contours.append(cnt)
 
     posible_contours = sorted(
         posible_contours, key=lambda cnt: cv2.boundingRect(cnt)[0])
@@ -101,12 +125,14 @@ def segmentate_characters(input="temp_plate.png"):
             cv2.drawContours(imageOut, [box], 0, (255, 0, 255), 2)
 
             (x, y, w, h) = cv2.boundingRect(cnt)
-            print(w)
             x -= margen
             y -= margen
             w += 2 * margen
             h += 2 * margen
             letter = image[y: y + h, x: x + w]
+
+            letter = character_cleaner(letter)
+
             characters.append(letter)
             show_image(letter, "Character")
             cv2.imwrite(
