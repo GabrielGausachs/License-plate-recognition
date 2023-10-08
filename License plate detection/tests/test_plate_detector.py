@@ -6,6 +6,7 @@ import os
 import sys
 import numpy as np
 import cv2
+import imutils
 
 import xml.etree.ElementTree as ET
 
@@ -26,7 +27,7 @@ def test_with_plates_big_dataset():
         print("----------------------------------")
         print(f"Image: {nombre_archivo}")
         print(f"XML: {nombre__xml}\n")
-        imatge = os.path.join(os.path.dirname(
+        image = os.path.join(os.path.dirname(
             __file__), carpeta_imagenes, nombre_archivo)
         xml = os.path.join(os.path.dirname(
             __file__), carpeta_xml, nombre__xml)
@@ -40,7 +41,7 @@ def test_with_plates_big_dataset():
         ymax = int(bndbox_element.find('ymax').text)
 
         try:
-            img, box = find_plate(imatge)  # Asume que find_plate está definida correctamente
+            img, box = find_plate(image)  # Asume que find_plate está definida correctamente
 
             # xmin, ymin, xmax, ymax of box
             min_x, min_y = np.min(box, axis=0)
@@ -60,14 +61,16 @@ def test_with_plates_big_dataset():
             print("Real - xmin: ", xmin, " ymin: ", ymin, " xmax: ", xmax, " ymax: ", ymax)
             print("Predicted - min_x: ", min_x, " min_y: ", min_y, " max_x: ", max_x, " max_y: ", max_y)
 
-            imatge = cv2.imread(imatge)
+            image = cv2.imread(image)
 
             # Dibujar las cajas en la imagen
-            cv2.rectangle(imatge, (xmin, ymin), (xmax, ymax), (0, 255, 0), 2)
-            cv2.rectangle(imatge, (min_x, min_y), (max_x, max_y), (0, 0, 255), 2)
+            cv2.rectangle(image, (xmin, ymin), (xmax, ymax), (0, 255, 0), 2)
+
+            image = imutils.resize(image, width=500)
+            cv2.rectangle(image, (min_x, min_y), (max_x, max_y), (0, 0, 255), 2)
 
             # Mostrar la imagen con ambas cajas dibujadas
-            cv2.imshow("Imagen con cajas", imatge)
+            cv2.imshow("Imagen con cajas", image)
             cv2.waitKey(0)
             cv2.destroyAllWindows()
 

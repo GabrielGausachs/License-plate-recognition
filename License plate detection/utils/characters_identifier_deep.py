@@ -6,11 +6,15 @@ using Python Library tesseract
 import cv2
 from matplotlib import pyplot as plt
 from tensorflow.keras.models import load_model
+import os
 
 # Load all saved h5 models
-model_cnn_1 = load_model("saved_models/model_cnn.h5")
-model_cnn_2 = load_model("saved_models/model_cnn_2.h5")
-model_nn = load_model("saved_models/model_nn.h5")
+model_cnn_1 = load_model(os.path.join(os.path.dirname(
+    __file__), "saved_models/model_cnn.h5"))
+model_cnn_2 = load_model(os.path.join(os.path.dirname(
+    __file__), "saved_models/model_cnn_2.h5"))
+model_nn = load_model(os.path.join(os.path.dirname(
+    __file__), "saved_models/model_nn.h5"))
 
 
 def show_image(image, title="Image"):
@@ -42,9 +46,11 @@ def identify_character(model_name, bw_img):
         model_to_use = model_nn
     else:
         raise Exception("Model not found")
+    
+    
 
-    # Predict character
-    data = model_to_use.predict(thresh.reshape(1, 28, 28, 1))
+    # Predict character - original image 1x1032
+    data = model_to_use.predict(thresh.reshape(40, 32, 1))
     data = data.argmax()
     data = chr(data + 65)
 
