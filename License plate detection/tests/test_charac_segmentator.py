@@ -4,6 +4,10 @@ Test - Segmentate characters in license plates
 
 import os
 import sys
+from matplotlib import pyplot as plt
+import cv2
+import numpy as np
+import imutils
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
