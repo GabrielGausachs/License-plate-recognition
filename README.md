@@ -26,7 +26,7 @@ In the first step of the project, we aim to detect the license plate from our im
 
 This process can be found in the file called plate_dectector.py
 
-![Alt text](<License plate detection/img/figure1.png>)
+![Alt text](<License plate detection/img/plates/0182GLK.png>)
 
 ![Alt text](<License plate detection/img/figure1.png>)
 
