@@ -26,6 +26,10 @@ In the first step of the project, we aim to detect the license plate from our im
 
 This process can be found in the file called plate_dectector.py
 
+![Alt text](<License plate detection/img/plates/0182GLK.png>)
+
+![Alt text](<License plate detection/img/figure1.png>)
+
 #### Step 2: Character segmentation
 After getting the original image cropped, it's time to detect the characters in the license plate. To achieve this, we follow this process:
 1. A binary **thresholding** operation is performed on the cropped image, previously converted it to Grayscale.
@@ -37,6 +41,8 @@ After getting the original image cropped, it's time to detect the characters in 
 7. We return a list of images where each image is one character.
 
 This process can be found in the file called character_segmentator.py
+
+![Alt text](<License plate detection/img/figure2.png>)
 
 
 #### Step 3: Predicting the license plate
