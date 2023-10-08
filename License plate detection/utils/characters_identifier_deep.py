@@ -2,8 +2,10 @@
 Identify characters in a license plate
 using Python Library tesseract
 """
-
+import numpy as np
 import cv2
+import os
+
 from matplotlib import pyplot as plt
 from tensorflow.keras.models import load_model
 import os
@@ -23,7 +25,7 @@ def show_image(image, title="Image"):
     plt.show()
 
 
-def identify_character(model_name, bw_img):
+def identify_character(bw_img, model_name= 'model_nn'):
     """
     Function to identify characters in a license plate using a Deep Learning model
 
@@ -40,17 +42,25 @@ def identify_character(model_name, bw_img):
 
     if model_name == "model_cnn":
         model_to_use = model_cnn_1
+        resized_image = cv2.resize(thresh, (32, 40))
+        resized_image = resized_image.reshape(1, 40, 32, 1)
     elif model_name == "model_cnn_2":
         model_to_use = model_cnn_2
+        #We need shape (1,96,96,3)
+        resized_image = cv2.resize(thresh, (32, 40))
+        resized_image = resized_image.reshape(1, 40, 32, 1)
     elif model_name == "model_nn":
+        resized_image = cv2.resize(thresh, (32, 40))
+        resized_image = resized_image.reshape(1, 40, 32, 1)
         model_to_use = model_nn
     else:
         raise Exception("Model not found")
     
     
 
-    # Predict character - original image 1x1032
-    data = model_to_use.predict(thresh.reshape(40, 32, 1))
+
+
+    data = model_to_use.predict(resized_image)
     data = data.argmax()
     data = chr(data + 65)
 

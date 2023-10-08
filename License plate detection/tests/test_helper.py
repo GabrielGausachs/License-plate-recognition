@@ -31,6 +31,10 @@ def check_error(actual_characters, predicted_full, predicted_segmented):
     # Calculate Levenshtein distances for full plate and segmented plate
     if predicted_full:
         levenshtein_distance_full_plate = Levenshtein.distance(predicted_full, actual_characters)
+            # Calculate accuracy for full plate 
+        accuracy_full_plate = sum(1 for a, b in zip(predicted_full, actual_characters) if a == b) / len(actual_characters) * 100
+    else:
+        accuracy_full_plate = None
     levenshtein_distance_segmented_plate = Levenshtein.distance(predicted_segmented, actual_characters)
 
     # Calculate accuracy for full plate
@@ -78,7 +82,7 @@ def validate_images(identify_character_funct, validate_with_full_plate=False, pr
     predicted_full = None
 
     for test_img in os.listdir(os.path.join(file_directory, img_directory)):
-        
+
         print("\n--------------------")
         print(f"Test image: {test_img}")
 
@@ -122,8 +126,8 @@ def validate_images(identify_character_funct, validate_with_full_plate=False, pr
         total_img += 1
 
     # Calculate overall accuracy percentages
-    overall_percentage_accuracy_full_plate = (total_correct_full_plate / total_letters) * 100
-    overall_percentage_accuracy_segmented_plate = (total_correct_segmented_plate / total_letters) * 100
+    overall_percentage_accuracy_full_plate = (total_correct_full_plate / total_img) * 100
+    overall_percentage_accuracy_segmented_plate = (total_correct_segmented_plate / total_img) * 100
 
     # Print overall test results
     print("\n--------------------")

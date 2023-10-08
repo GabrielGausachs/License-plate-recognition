@@ -7,7 +7,7 @@ import os
 
 config = {
     "print": {
-        "original": False,
+        "original": True,
         "gray": False,
         "binary": False,
         "inverted": False,
@@ -22,6 +22,10 @@ def show_image(image, title="Image"):
         plt.imshow(image, cmap="gray")
         plt.title(title)
         plt.show()
+
+def erode(img, kernel_size, iters):
+    kernel = np.ones(kernel_size, np.uint8)
+    return cv2.erode(img, kernel, iterations=iters)
 
 
 def segmentate_characters(input="temp_plate.png"):
@@ -42,10 +46,11 @@ def segmentate_characters(input="temp_plate.png"):
     show_image(image, "Gray")
 
     ret3, th3 = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY)
-    show_image(th3, "Binary")
+    show_image(th3, "binary")
 
     inverted = cv2.bitwise_not(th3)
     show_image(inverted, "Inverted")
+
 
     contours, hierarchy = cv2.findContours(
         inverted, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
@@ -63,9 +68,21 @@ def segmentate_characters(input="temp_plate.png"):
                 and y != 0
                 and x + w != imageOut.shape[1]
                 and y + h != imageOut.shape[0]
-                and cv2.contourArea(cnt) > 50
+                and cv2.contourArea(cnt) > 38
             ):
-                posible_contours.append(cnt)
+                # if w > 25:
+                #     # Calculate the center of the bounding rectangle
+                #     center_x = x + w // 2
+                #     center_y = y + h // 2
+                    
+                #     # Create two new contours by splitting the original contour
+                #     contour1 = cnt[:, :center_x, :]
+                #     contour2 = cnt[:, center_x:, :]
+                #     posible_contours.append(contour1)
+                #     posible_contours.append(contour2)
+
+                # else:
+                    posible_contours.append(cnt)
 
     posible_contours = sorted(
         posible_contours, key=lambda cnt: cv2.boundingRect(cnt)[0])
@@ -84,6 +101,7 @@ def segmentate_characters(input="temp_plate.png"):
             cv2.drawContours(imageOut, [box], 0, (255, 0, 255), 2)
 
             (x, y, w, h) = cv2.boundingRect(cnt)
+            print(w)
             x -= margen
             y -= margen
             w += 2 * margen
