@@ -9,6 +9,7 @@ import sys
 
 from matplotlib import pyplot as plt
 from tensorflow.keras.models import load_model
+import tensorflow as tf
 import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -31,7 +32,7 @@ def show_image(image, title="Image"):
     plt.show()
 
 
-def identify_character(bw_img, model_name='model_nn'):
+def identify_character(bw_img, model_name='model_cnn_5'):
     """
     Function to identify characters in a license plate using a Deep Learning model
 
@@ -46,29 +47,38 @@ def identify_character(bw_img, model_name='model_nn'):
     img = cv2.GaussianBlur(bw_img, (3, 3), 0)
     _, thresh = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
+
     if model_name == "model_cnn":
+        
         model_to_use = model_cnn_1
-        resized_image = cv2.resize(thresh, (32, 40))
+        resized_image = cv2.resize(thresh, (32, 40), interpolation=cv2.INTER_LINEAR)
         resized_image = resized_image.reshape(1, 40, 32, 1)
     elif model_name == "model_cnn_2":
         model_to_use = model_cnn_2
         # We need shape (1,96,96,3)
-        resized_image = cv2.resize(thresh, (32, 40))
-        resized_image = resized_image.reshape(1, 40, 32, 1)
+        resized_image = cv2.resize(thresh, (28, 28))
+        resized_image = resized_image.reshape((1, 28, 28, 1))
+
     elif model_name == "model_nn":
         resized_image = cv2.resize(thresh, (32, 40))
         resized_image = resized_image.reshape(1, 40, 32, 1)
         model_to_use = model_nn
+
     else:
         raise Exception("Model not found")
 
-    show_image(resized_image.reshape(40, 32), "Resized image")
+    #show_image(resized_image, "Resized image")
+    result = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+              'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+              'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+              'U', 'V', 'W', 'X', 'Y', 'Z']
 
     data = model_to_use.predict(resized_image)
     data = data.argmax()
-    data = chr(data + 65)
 
-    return data
+    #data = chr(data + 65)
+
+    return result[data]
 
 
 if __name__ == "__main__":
