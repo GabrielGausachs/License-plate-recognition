@@ -29,21 +29,22 @@ def validate_model_resnet(validate_with_full_plate=False, print_compare_img=Fals
     total_correct_full_plate = 0
     total_correct_segmented_plate = 0
 
-    img_directory = "../img/plates/"
-    file_directory = os.path.dirname(os.path.realpath(__file__))
+    #mg_directory = "../img/plates/"
+    #file_directory = os.path.dirname(os.path.realpath(__file__))
 
     predicted_full = None
 
-    for test_img in os.listdir(os.path.join(file_directory, img_directory)):
-
+    #for test_img in os.listdir(os.path.join(file_directory, img_directory)):
+    for i in range(1):
         print("\n--------------------")
-        print(f"Test image: {test_img}")
+        #print(f"Test image: {test_img}")
 
-        actual_characters = test_img.split(".")[0]
-        img_path = os.path.join(file_directory, img_directory + test_img)
+        #actual_characters = test_img.split(".")[0]
+        actual_characters = '8727JTC'
+        #img_path = os.path.join(file_directory, img_directory + test_img)
 
         # Find plate
-        plate, _ = find_plate(img_path)
+        #plate, _ = find_plate(img_path)
 
         # Segmentate characters
         segmentated_chars = segmentate_characters("temp_plate.png")
@@ -100,7 +101,10 @@ if __name__ == "__main__":
     num_classes = 35
     loaded_model, input_size = initialize_model_fe(num_classes)
 
-    loaded_model.load_state_dict(torch.load('../utils/saved_models/resnet_gabri.pth'))
+    file = os.path.dirname(os.path.realpath(__file__))
+
+    path_model = os.path.join(os.path.dirname(file), "saved_models/resnet_gabri.pth")
+    loaded_model.load_state_dict(torch.load(path_model))
 
     print('hello')
 
