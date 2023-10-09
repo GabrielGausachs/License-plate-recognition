@@ -5,15 +5,12 @@ Test - Identify characters in a license plate using Python Library tesseract
 import os
 import sys
 import cv2
-import pytesseract
 from matplotlib import pyplot as plt
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from test_helper import validate_images
 from utils.characters_identifier_ocr import identify_character
-
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 
 def show_image(image, title="Image"):
@@ -58,4 +55,4 @@ def test_with_letter_dataset():
 
 
 if __name__ == "__main__":
-    validate_images(identify_character, True, True)
+    validate_images(identify_character, False, True)

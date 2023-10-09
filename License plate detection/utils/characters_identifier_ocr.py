@@ -4,10 +4,9 @@ using Python Library tesseract
 """
 
 import cv2
-import pytesseract
+import easyocr
 from matplotlib import pyplot as plt
-
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+import numpy as np
 
 
 def show_image(image, title="Image"):
@@ -16,7 +15,18 @@ def show_image(image, title="Image"):
     plt.show()
 
 
-def identify_character(bw_img, print_img=False):
+def scan_letter(reader, letter):
+    detected_character = None
+    results = reader.readtext(letter)
+    if results:
+        detected_character = results[0][1]
+        print("Detected character:", detected_character)
+    else:
+        print("No character detected.")
+    return detected_character
+
+
+def identify_character(bw_img, print_img=False, letter=False):
     """
     Function to identify characters in a license plate
 
@@ -26,21 +36,24 @@ def identify_character(bw_img, print_img=False):
         result: string of characters
     """
 
-    # Preprocess image
-    img = cv2.GaussianBlur(bw_img, (3, 3), 0)
-    _, thresh = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    _, thresh = cv2.threshold(bw_img, 127, 255, cv2.THRESH_BINARY)
 
-    # Morphological operations to remove noise
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
-    opening = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel, iterations=1)
-    invert = 255 - opening
+    # show_image(thresh, "invert")
 
-    # Perform text extraction
-    data = pytesseract.image_to_string(invert, lang="eng", config="--psm 6")
+    reader = easyocr.Reader(lang_list=['en'], gpu=False)
+
+    convert_num2char = {"6": "G", "2": "Z"}
+    convert_char2num = {"L": "4", "G": "6", "Z": "2"}
+
+    char = scan_letter(reader=reader, letter=thresh)
+    char = char if char else '-'
+    if not letter and char.isalpha():
+        char = convert_char2num[char]
+    elif letter and char.isdigit():
+        char = convert_num2char[char]
 
     if print_img:
-        print(f"Predicted characters: {data}")
-        plt.imshow(invert, cmap="gray")
+        plt.imshow(thresh, cmap="gray")
         plt.show()
 
-    return data
+    return char

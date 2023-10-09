@@ -83,14 +83,13 @@ def segmentate_characters(input="temp_plate.png"):
     show_image(image, "Gray")
 
     threshold = 127
-    detected=False
+    detected = False
     while not detected:
         ret3, th3 = cv2.threshold(image, threshold, 255, cv2.THRESH_BINARY)
         show_image(th3, "binary")
 
         inverted = cv2.bitwise_not(th3)
         show_image(inverted, "Inverted")
-
 
         contours, hierarchy = cv2.findContours(
             inverted, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
@@ -108,20 +107,20 @@ def segmentate_characters(input="temp_plate.png"):
                     and y != 0
                     and x + w != imageOut.shape[1]
                     and y + h != imageOut.shape[0]
-                    and y> 23
-                    and w/h>0.15
+                    and y > 23
+                    and w/h > 0.15
                     and cv2.contourArea(cnt) > 45
                 ):
-                        posible_contours.append(cnt)
+                    posible_contours.append(cnt)
 
         posible_contours = sorted(
             posible_contours, key=lambda cnt: cv2.boundingRect(cnt)[0])
-        
-        if len(posible_contours)>6:
-            detected=True
+
+        if len(posible_contours) > 6:
+            detected = True
         n = 0
         margen = 5
-        if detected==True:
+        if detected:
             if len(posible_contours) > 7:  # E detected
                 posible_contours = posible_contours[1:]
             else:
@@ -139,6 +138,7 @@ def segmentate_characters(input="temp_plate.png"):
                     w += 2 * margen
                     h += 2 * margen
                     letter = image[y: y + h, x: x + w]
+                    letter = character_cleaner(letter)
                     characters.append(letter)
                     show_image(letter, "Character")
                     if letter is not None:
