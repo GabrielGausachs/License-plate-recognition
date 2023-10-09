@@ -103,7 +103,7 @@ if __name__ == "__main__":
 
     file = os.path.dirname(os.path.realpath(__file__))
 
-    path_model = os.path.join(os.path.dirname(file), "saved_models/resnet_gabri.pth")
+    path_model = os.path.join(os.path.dirname(__file__), "../utils/saved_modesl/resnet_gabri.pth")
     loaded_model.load_state_dict(torch.load(path_model))
 
     print('hello')
