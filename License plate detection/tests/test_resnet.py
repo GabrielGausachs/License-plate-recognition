@@ -3,6 +3,7 @@ import os
 import sys
 import torch
 import matplotlib.pyplot as plt
+import torchvision.transforms as transforms
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -53,11 +54,14 @@ def validate_model_resnet(validate_with_full_plate=False, print_compare_img=Fals
         predicted_segmentated = []
         loaded_model.eval()
         for i, character in enumerate(segmentated_chars):
-            try:
-                character_result = loaded_model(character)
-                print('character',character_result)
-            except Exception:
-                print('Error')
+            train_transforms =transforms.Compose([
+                transforms.Resize((75,50)),
+                transforms.RandomHorizontalFlip(),
+                transforms.ToTensor(),
+                transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+                ])
+            character_result = loaded_model(character)
+            print('character',character_result)
             predicted_segmentated.append(''.join(e for e in character_result))
 
         predicted_segmentated = "".join(predicted_segmentated).replace(" ", "")
@@ -65,8 +69,8 @@ def validate_model_resnet(validate_with_full_plate=False, print_compare_img=Fals
         # Call test_helper for accuracy calculation and logging
         accuracy_full_plate, accuracy_segmented_plate = check_error(actual_characters, predicted_full, predicted_segmentated)
 
-        if print_compare_img:
-            show_image(plate, "Final")
+        #if print_compare_img:
+        #    show_image(plate, "Final")
 
         # Check if correct for full plate
         if accuracy_full_plate == 100:
@@ -104,7 +108,7 @@ if __name__ == "__main__":
     file = os.path.dirname(os.path.realpath(__file__))
 
     model_directory = "../utils/saved_models/resnet_gabri.pth"
-    
+
     file_directory = os.path.dirname(os.path.realpath(__file__))
     path_model= os.path.join(file_directory, model_directory)
 
