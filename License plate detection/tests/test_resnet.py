@@ -54,6 +54,7 @@ def validate_model_resnet(validate_with_full_plate=False, print_compare_img=Fals
         for i, character in enumerate(segmentated_chars):
             try:
                 character_result = loaded_model(character)
+                print('character',character_result)
             except Exception:
                 print('Error')
             predicted_segmentated.append(''.join(e for e in character_result))
@@ -102,7 +103,7 @@ if __name__ == "__main__":
     loaded_model.load_state_dict(torch.load('../utils/saved_models/resnet_gabri.pth'))
 
     print('hello')
-    
+
     validate_model_resnet(False,True, loaded_model)
 
     
