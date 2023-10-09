@@ -55,4 +55,4 @@ def test_with_letter_dataset():
 
 
 if __name__ == "__main__":
-    validate_images(identify_character, False, True)
+    validate_images(identify_character, False, False)

@@ -16,7 +16,7 @@ def show_image(image, title="Image"):
     plt.show()
 
 
-def identify_character(bw_img, print_img=False):
+def identify_character(bw_img, print_img=False, position=None):
     """
     Function to identify characters in a license plate
 
@@ -26,21 +26,20 @@ def identify_character(bw_img, print_img=False):
         result: string of characters
     """
 
-    # Preprocess image
-    img = cv2.GaussianBlur(bw_img, (3, 3), 0)
-    _, thresh = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-
-    # Morphological operations to remove noise
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
-    opening = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel, iterations=1)
-    invert = 255 - opening
+    if position:
+        if position > 3:
+            custom_config = r'--psm 6 --oem 3 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+        else:
+            custom_config = r'--psm 6 --oem 3 -c tessedit_char_whitelist=0123456789'
+    else:
+        custom_config = r'--psm 6 --oem 3 -c tessedit_char_whitelist=0123456789'
 
     # Perform text extraction
-    data = pytesseract.image_to_string(invert, lang="eng", config="--psm 6")
+    data = pytesseract.image_to_string(bw_img, config=custom_config)
 
-    if print_img:
-        print(f"Predicted characters: {data}")
-        plt.imshow(invert, cmap="gray")
-        plt.show()
+    # if print_img:
+    #     print(f"Predicted characters: {data}")
+    #     plt.imshow(bw_img, cmap="gray")
+    #     plt.show()
 
     return data

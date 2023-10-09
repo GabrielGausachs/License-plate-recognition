@@ -127,18 +127,38 @@ def segmentate_characters(input="temp_plate.png"):
                 pass
             for cnt in posible_contours:
                 if n < 7:
+                    imageOut = image.copy()
                     rect = cv2.minAreaRect(cnt)
                     box = cv2.boxPoints(rect)
                     box = np.intp(box)
-                    cv2.drawContours(imageOut, [box], 0, (255, 0, 255), 2)
+                    # cv2.drawContours(imageOut, [box], 0, (255, 0, 255), 2)
 
                     (x, y, w, h) = cv2.boundingRect(cnt)
                     x -= margen
                     y -= margen
                     w += 2 * margen
                     h += 2 * margen
-                    letter = image[y: y + h, x: x + w]
-                    letter = character_cleaner(letter)
+                    # letter = image[y: y + h, x: x + w]
+                    # letter = character_cleaner(letter)
+                    # Para cada punto de la imagen original, si esta fuera del rectangulo, se pone en blanco
+                    (x, y, w, h) = cv2.boundingRect(cnt)
+                    for i in range(image.shape[0]):
+                        for j in range(image.shape[1]):
+                            if not (x <= j <= x + w and y <= i <= y + h):
+                                imageOut[i, j] = 255
+                    (x, y, w, h) = cv2.boundingRect(cnt)
+                    x -= margen
+                    y -= margen
+                    w += 2 * margen
+                    h += 2 * margen
+                    letter = imageOut
+                    # Threshold
+                    ret, thresh = cv2.threshold(letter, 125, 255, cv2.THRESH_BINARY)
+                    # Add some blurness
+                    thresh = cv2.GaussianBlur(thresh, (3, 3), 0)
+                    letter = thresh
+                    letter = letter[y: y + h, x: x + w]
+                    show_image(letter, "Mask")
                     characters.append(letter)
                     show_image(letter, "Character")
                     if letter is not None:
