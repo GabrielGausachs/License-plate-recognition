@@ -31,7 +31,6 @@ def check_error(actual_characters, predicted_full, predicted_segmented):
     # Calculate Levenshtein distances for full plate and segmented plate
     if predicted_full:
         levenshtein_distance_full_plate = Levenshtein.distance(predicted_full, actual_characters)
-            # Calculate accuracy for full plate 
         accuracy_full_plate = sum(1 for a, b in zip(predicted_full, actual_characters) if a == b) / len(actual_characters) * 100
     else:
         accuracy_full_plate = None
@@ -42,6 +41,7 @@ def check_error(actual_characters, predicted_full, predicted_segmented):
         accuracy_full_plate = sum(1 for a, b in zip(predicted_full, actual_characters) if a == b) / len(actual_characters) * 100
 
     # Calculate accuracy for segmented plate
+    total_letters_correct = sum(1 for a, b in zip(predicted_segmented, actual_characters) if a == b)
     accuracy_segmented_plate = sum(1 for a, b in zip(predicted_segmented, actual_characters) if a == b) / len(actual_characters) * 100
 
     # Log results with Levenshtein distances
@@ -58,9 +58,9 @@ def check_error(actual_characters, predicted_full, predicted_segmented):
     print(f"Accuracy:                {accuracy_segmented_plate:.2f}% - {'Correct' if accuracy_segmented_plate == 100 else 'Incorrect'}")
 
     if predicted_full:
-        return accuracy_full_plate, accuracy_segmented_plate
+        return accuracy_full_plate, accuracy_segmented_plate, total_letters_correct
     else:
-        return 0, accuracy_segmented_plate
+        return 0, accuracy_segmented_plate, total_letters_correct
 
 
 def validate_images(identify_character_funct, validate_with_full_plate=False, print_compare_img=False, model=None):
@@ -72,7 +72,7 @@ def validate_images(identify_character_funct, validate_with_full_plate=False, pr
     """
 
     total_img = 0
-    total_letters = 0
+    total_letters_correct = 0
     total_correct_full_plate = 0
     total_correct_segmented_plate = 0
 
@@ -112,7 +112,7 @@ def validate_images(identify_character_funct, validate_with_full_plate=False, pr
         predicted_segmentated = "".join(predicted_segmentated).replace(" ", "")
 
         # Call test_helper for accuracy calculation and logging
-        accuracy_full_plate, accuracy_segmented_plate = check_error(actual_characters, predicted_full, predicted_segmentated)
+        accuracy_full_plate, accuracy_segmented_plate, total_letters_correct_seg = check_error(actual_characters, predicted_full, predicted_segmentated)
 
         if print_compare_img:
             show_image(plate, "Final")
@@ -125,7 +125,7 @@ def validate_images(identify_character_funct, validate_with_full_plate=False, pr
         if accuracy_segmented_plate == 100:
             total_correct_segmented_plate += 1
 
-        total_letters += len(actual_characters)
+        total_letters_correct += total_letters_correct_seg
         total_img += 1
 
     # Calculate overall accuracy percentages
@@ -136,6 +136,7 @@ def validate_images(identify_character_funct, validate_with_full_plate=False, pr
     print("\n--------------------")
     print(f"Total correct for full plate: {total_correct_full_plate} - {overall_percentage_accuracy_full_plate:.2f}%")
     print(f"Total correct for segmented plate: {total_correct_segmented_plate} - {overall_percentage_accuracy_segmented_plate:.2f}%")
+    print(f"Total correct letters: {total_letters_correct} - {(total_letters_correct / (total_img * 7)) * 100:.2f}%")
 
     # Check overall test result based on overall accuracy percentages
     if overall_percentage_accuracy_full_plate >= 90 and overall_percentage_accuracy_segmented_plate >= 90:

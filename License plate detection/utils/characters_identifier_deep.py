@@ -62,7 +62,7 @@ def identify_character(bw_img, model_name='model_nn'):
     else:
         raise Exception("Model not found")
 
-    show_image(resized_image.reshape(40, 32), "Resized image")
+     # show_image(resized_image.reshape(40, 32), "Resized image")
 
     data = model_to_use.predict(resized_image)
     data = data.argmax()

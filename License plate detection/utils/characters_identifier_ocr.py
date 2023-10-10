@@ -7,6 +7,7 @@ import easyocr
 from matplotlib import pyplot as plt
 import os
 import cv2
+import numpy as np
 
 
 def show_image(image, title="Image"):
@@ -44,12 +45,12 @@ def identify_character(bw_img, print_img=False, position=None):
     else:
         letter = False
 
-    # show_image(bw_img, "Original image")
+    # show_image(bw_img, "Binary")
 
     reader = easyocr.Reader(lang_list=['en'], gpu=False)
 
     convert_num2char = {"6": "G", "2": "Z", "0": "D", "4": "H", "8": "B"}
-    convert_char2num = {"L": "4", "G": "6", "Z": "2", "D": "0", "H": "4"}
+    convert_char2num = {"L": "4", "G": "6", "Z": "2", "D": "0", "H": "4", "T": "7", "B": "8"}
 
     char = scan_letter(reader=reader, letter=bw_img)
     char = char if char else '-'
@@ -61,12 +62,32 @@ def identify_character(bw_img, print_img=False, position=None):
     except KeyError:
         pass
     if letter and char == "-":
-        char = "J"
+        # Proportion of black pixels
+        img_temp = bw_img.copy()
+        # Amplitud de 200 pixeles
+        img_temp = cv2.resize(img_temp, (200, 50))
+        total_black_pixels = np.sum(img_temp == 0) / (img_temp.shape[0] * img_temp.shape[1])
+        print("Total black pixels:", total_black_pixels)
+        print("Total number of pixels:", img_temp.shape[0] * img_temp.shape[1])
+        if total_black_pixels < 0.08:
+            char = "J"
+        else:
+            char = "Y"
     elif not letter and char == "-":
-        char = "1"
+        # Proportion of black pixels
+        img_temp = bw_img.copy()
+        # Amplitud de 200 pixeles
+        img_temp = cv2.resize(img_temp, (200, 50))
+        total_black_pixels = np.sum(img_temp == 0) / (img_temp.shape[0] * img_temp.shape[1])
+        print("Total black pixels:", total_black_pixels)
+        print("Total number of pixels:", img_temp.shape[0] * img_temp.shape[1])
+        if total_black_pixels < 0.01:
+            char = "1"
+        else:
+            char = "4"
 
     # if print_img:
-    #     plt.imshow(bw_img, cmap="gray")
+    #     plt.imshow(img, cmap="gray")
     #     plt.show()
 
     return char.upper()
