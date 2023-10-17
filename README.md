@@ -56,7 +56,8 @@ For our models, we used for training the dataset of the characters mentioned abo
 
 Our approach was able to detect license plates with a 98% accuracy rate and an average processing time of 0.8 seconds per image.
 
-FALTA A FER
+![image](https://github.com/GabrielGausachs/PSIV-projects/assets/130310825/6838481d-b06a-4898-87b0-aaf5a4c66baf)
+
 
 #### Conclusion
 
