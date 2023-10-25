@@ -1,8 +1,4 @@
-# Signal, image and video processing
-
-In this repository we will build diferents projects related to signal, images and video processing.
-
-### License Plate Detection
+# License Plate Detection
 
 This project is dedicated to the task of detecting license plates in static images. License plate detection plays a crucial role in various applications, including traffic management, law enforcement, and automated toll collection. The project involves implementing various techniques and algorithms to read digital images, detect regions of interest and detect the license plates' position in the images to finally extract the license number of the car.
 
